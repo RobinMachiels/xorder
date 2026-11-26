@@ -1,48 +1,39 @@
 # XOrder by AssurIO
 
-Lichte, modulaire OOP PHP + MySQL webapplicatie voor traiteurs, slagers, bakkers en speciaalzaken om feestbestellingen zonder gedoe en in alle zekerheid te beheren, inclusief 1-klik lokale Excel-backup (`.xlsx`) en tijdelijke "Kerstdorp" sticky widget voor `assurio.be`.
+Lichte, modulaire OOP PHP + MySQL webapplicatie voor traiteurs, slagers, bakkers en speciaalzaken om feestbestellingen zonder gedoe en in alle zekerheid te beheren, inclusief 1-klik lokale Excel-backup (`.xlsx`).
 
-## 1. Lokaal starten (met SQLite, zonder extra installatie)
+Live: https://assurio.be/xorder/
 
-Vanuit de hoofdmap van dit project:
+## 1. Lokaal starten (SQLite, zonder extra installatie)
 
 ```bash
 php -S 127.0.0.1:8787 -t public
 ```
 
-Open daarna in je browser:
+- Landingspagina + registratie (NL/FR): `http://127.0.0.1:8787/`
+- App dashboard (na registratie/login): `http://127.0.0.1:8787/app`
+- Features van de klas: `http://127.0.0.1:8787/features`
 
-- **Landingspagina + registratie (NL/FR):** `http://127.0.0.1:8787/`
-- **AssurIO sticky knop schermpreview:** `http://127.0.0.1:8787/widget-preview`
-- **App dashboard (na registratie/login):** `http://127.0.0.1:8787/app`
+Zonder `config/config.php` gebruikt de app `config/config.example.php` (SQLite in `storage/xorder.sqlite`, debug aan). Tabellen worden automatisch aangemaakt bij het eerste verzoek.
 
-De lokale `config/config.php` gebruikt standaard SQLite (`storage/xorder.sqlite`). Tabellen worden automatisch aangemaakt bij het eerste verzoek.
+## 2. Features van cursisten
 
-## 2. Installatie op Combell hosting (PHP + MySQL)
+Elke cursist maakt `features/<voornaam>.php` met eigen assets in `public/features/<voornaam>/`.
+De pagina verschijnt vanzelf op `/features/<voornaam>` en in het menu. Lees [CONTRIBUTING.md](CONTRIBUTING.md).
+Op productie staan features uit (`features.enabled = false`) en worden ze niet mee gedeployed.
 
-1. Upload het volledige project naar jouw hostingmap (of wijs het domein rechtstreeks naar de map `public/`). De meegeleverde `.htaccess` in de hoofdmap stuurt verzoeken ook veilig door naar `public/` en blokkeert rechtstreekse toegang tot `config/`, `database/`, `lang/`, `src/`, `storage/` en `views/`.
-2. Kopieer `config/config.example.php` naar `config/config.php`.
-3. Zet in `config/config.php` de database-driver op `'mysql'` en vul jouw Combell MySQL-gegevens in (`host`, `database`, `username`, `password`).
-4. Optioneel: importeer `database/schema.mysql.sql` via phpMyAdmin (dit gebeurt ook automatisch bij de eerste paginalading indien de tabellen nog niet bestaan).
+## 3. Productie
 
-## 3. AssurIO "Kerstdorp" sticky knop integreren
+Zie [DEPLOY.md](DEPLOY.md). Kort: `bash bin/deploy-assurio.sh --dry-run`, daarna zonder `--dry-run`.
 
-In de map `widget/` vind je de volledige drop-in integratie:
+## 4. Seizoensknop op assurio.be
 
-- `widget/assurio-xorder-widget.css`
-- `widget/assurio-xorder-widget.js`
-- `widget/wordpress-snippet.php` (klaar om te plakken in een mu-plugin of `functions.php` op `assurio.be`)
-
-De knop verschijnt automatisch enkel tussen `startDate` (`2026-10-15`) en `endDate` (`2027-01-05`), detecteert NL of FR uit `<html lang>`, en onthoudt wanneer een bezoeker de knop wegklikt (`×`) in `localStorage`.
-
-## 4. Engels (EN) later activeren
-
-1. Kopieer `lang/en.php.example` naar `lang/en.php` en vertaal alle sleutels uit `lang/nl.php`.
-2. Voeg `'en'` toe aan `'supported_locales' => ['nl', 'fr', 'en']` in `config/config.php`.
+Zie [widget/README.md](widget/README.md). De bestanden staan in `public/widget/`.
 
 ## 5. Extra's
 
-- **Wachtwoord vergeten:** `/forgot` en `/reset/<token>` (token 1 uur geldig, eenmalig, enkel gehasht opgeslagen). In debug-modus toont de pagina de resetlink lokaal rechtstreeks.
+- **Wachtwoord vergeten:** `/forgot` en `/reset/<token>` (token 1 uur geldig, eenmalig, enkel gehasht opgeslagen). Links in mails komen uit `app.url`, nooit uit de Host-header.
+- **Brute-force bescherming:** max 8 loginpogingen per e-mail en IP per 15 minuten, max 5 resetaanvragen per IP per uur.
 - **Juridische pagina's:** `/privacy` en `/cookies` (NL/FR).
-- **Statistieken seizoensknop:** anonieme tellers (getoond, uitgeklapt, aangeklikt, weggeklikt). Bekijk met `php bin/widget-stats.php`.
-- **Deploypakket voor Combell:** `bash bin/build-deploy.sh`, daarna de stappen in [DEPLOY.md](DEPLOY.md). Er wordt niets automatisch geupload.
+- **Statistieken seizoensknop:** `php bin/widget-stats.php`.
+- **Engels later activeren:** kopieer `lang/en.php.example` naar `lang/en.php`, vertaal, en voeg `'en'` toe aan `supported_locales`.

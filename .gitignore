@@ -15,3 +15,5 @@ Thumbs.db
 
 # Deploy packages
 /dist/
+/storage/logs/
+/mcp-crashcourse/

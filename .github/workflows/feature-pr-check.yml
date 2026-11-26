@@ -1,0 +1,57 @@
+# Controleert elke pull request van een cursist:
+# 1. Je raakt enkel features/<voornaam>.php en public/features/<voornaam>/ aan
+# 2. Alles in de PR hoort bij EEN voornaam
+# 3. Je PHP-bestand bevat geen syntaxfouten
+name: Feature PR check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Welke bestanden raakt deze PR aan?
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD > changed.txt
+          echo "Gewijzigde bestanden:"
+          cat changed.txt
+
+      - name: Enkel je eigen bestanden?
+        run: |
+          names=""
+          fout=0
+          while IFS= read -r file; do
+            if [[ "$file" =~ ^features/([a-z][a-z0-9-]{1,30})\.php$ ]]; then
+              naam="${BASH_REMATCH[1]}"
+            elif [[ "$file" =~ ^public/features/([a-z][a-z0-9-]{1,30})/[^/].*$ ]]; then
+              naam="${BASH_REMATCH[1]}"
+            else
+              echo "::error file=$file::Dit is een gezamenlijk bestand. Afspraak: enkel features/<voornaam>.php en public/features/<voornaam>/ aanpassen."
+              fout=1
+              continue
+            fi
+            if [[ "$naam" == "voorbeeld" ]]; then
+              echo "::error file=$file::De voorbeeld-feature is van de docent. Kopieer ze naar je eigen naam."
+              fout=1
+            fi
+            names="$names $naam"
+          done < changed.txt
+
+          uniek=$(echo $names | tr ' ' '\n' | sort -u | grep -v '^$' | wc -l)
+          if [[ "$uniek" -gt 1 ]]; then
+            echo "::error::Deze PR bevat bestanden van meerdere namen:$(echo $names | tr ' ' '\n' | sort -u | tr '\n' ' ')"
+            fout=1
+          fi
+          exit $fout
+
+      - name: PHP syntax
+        run: |
+          for f in $(grep -E '\.php$' changed.txt || true); do
+            if [[ -f "$f" ]]; then php -l "$f"; fi
+          done

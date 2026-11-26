@@ -8,6 +8,7 @@ use App\Core\App;
 use App\Core\Request;
 use App\Core\Response;
 use App\Services\AuthService;
+use App\Services\LoginThrottle;
 use App\Services\PasswordResetService;
 
 /**
@@ -16,11 +17,13 @@ use App\Services\PasswordResetService;
 final class PasswordController extends BaseController
 {
     private PasswordResetService $resets;
+    private LoginThrottle $throttle;
 
-    public function __construct(App $app, AuthService $auth, PasswordResetService $resets)
+    public function __construct(App $app, AuthService $auth, PasswordResetService $resets, LoginThrottle $throttle)
     {
         parent::__construct($app, $auth);
         $this->resets = $resets;
+        $this->throttle = $throttle;
     }
 
     public function showForgot(Request $request): Response
@@ -40,6 +43,14 @@ final class PasswordController extends BaseController
         }
 
         $email = trim((string) $request->post('email', ''));
+        // Per IP beperken, zodat niemand onze mailserver kan misbruiken om mails te spammen
+        $throttleKey = $request->ip();
+        if ($this->throttle->tooManyAttempts('forgot', $throttleKey)) {
+            $this->app->session->flash('error', $this->app->i18n->t('auth.too_many_attempts'));
+            return Response::redirect($request->url('/forgot'));
+        }
+        $this->throttle->hit('forgot', $throttleKey);
+
         if ($email !== '' && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $debugLink = $this->resets->request($email, $request->absoluteUrl('/reset'));
             if ($debugLink !== null) {

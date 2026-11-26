@@ -13,6 +13,13 @@ declare(strict_types=1);
 <section class="section">
     <div class="container" style="max-width:460px;">
         <div class="card" style="box-shadow:var(--shadow-md);">
+            <div class="auth-card-brand">
+                <img src="<?= $e($url('/assets/img/xorder-mark.svg')) ?>" alt="" width="42" height="42">
+                <span class="brand-wordmark">
+                    <span class="brand-name" style="font-size:1.22rem;"><?= $e($t('brand.name')) ?></span>
+                    <span class="brand-sub"><?= $e($t('brand.by')) ?></span>
+                </span>
+            </div>
             <h1 style="margin:0 0 18px;font-size:1.55rem;"><?= $e($t('auth.reset_title')) ?></h1>
 
             <form method="post" action="<?= $e($url('/reset/' . $token)) ?>">

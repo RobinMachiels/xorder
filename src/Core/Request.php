@@ -12,6 +12,7 @@ final class Request
     private string $method;
     private string $path;
     private string $basePath;
+    private string $appUrl = '';
 
     /** @var array<string, mixed> */
     private array $query;
@@ -43,7 +44,7 @@ final class Request
         $this->server = $server;
     }
 
-    public static function capture(string $configuredBaseUrl = ''): self
+    public static function capture(string $configuredBaseUrl = '', string $appUrl = ''): self
     {
         $method = (string) ($_SERVER['REQUEST_METHOD'] ?? 'GET');
         $rawUri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
@@ -61,7 +62,10 @@ final class Request
             $path = rtrim($path, '/');
         }
 
-        return new self($method, $path, $basePath, $_GET, $_POST, $_SERVER);
+        $request = new self($method, $path, $basePath, $_GET, $_POST, $_SERVER);
+        $request->appUrl = rtrim($appUrl, '/');
+
+        return $request;
     }
 
     /**
@@ -123,6 +127,11 @@ final class Request
 
     public function absoluteUrl(string $path = '/'): string
     {
+        if ($this->appUrl !== '') {
+            $normalized = '/' . ltrim($path, '/');
+            return $this->appUrl . ($normalized === '/' ? '/' : $normalized);
+        }
+
         $https = (!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off')
             || ((int) ($this->server['SERVER_PORT'] ?? 80) === 443);
         $scheme = $https ? 'https' : 'http';
@@ -147,6 +156,11 @@ final class Request
     public function allPost(): array
     {
         return $this->post;
+    }
+
+    public function ip(): string
+    {
+        return (string) ($this->server['REMOTE_ADDR'] ?? '0.0.0.0');
     }
 
     public function acceptLanguage(): string

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\ExportController;
+use App\Controllers\FeatureController;
 use App\Controllers\KitchenController;
 use App\Controllers\LandingController;
 use App\Controllers\OrderController;
@@ -22,27 +23,14 @@ use App\Repositories\ProductRepository;
 use App\Repositories\UserRepository;
 use App\Services\AuthService;
 use App\Services\DemoSeederService;
+use App\Services\LoginThrottle;
 use App\Services\XlsxExporter;
 
+// Standaard staat de app-code naast public/. Op een server waar enkel public/ in de webroot
+// staat (bv. assurio.be/xorder), wijst public/xorder-path.php naar de map met de app-code.
 $rootDir = dirname(__DIR__);
-
-// Serve widget static files cleanly when running with `php -S 127.0.0.1:8787 -t public`
-$rawPath = parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
-if (is_string($rawPath) && str_starts_with($rawPath, '/widget/')) {
-    $widgetFile = realpath($rootDir . $rawPath);
-    $widgetBase = realpath($rootDir . '/widget');
-    if ($widgetFile !== false && $widgetBase !== false && str_starts_with($widgetFile, $widgetBase) && is_file($widgetFile)) {
-        $ext = pathinfo($widgetFile, PATHINFO_EXTENSION);
-        $mime = match ($ext) {
-            'css' => 'text/css; charset=UTF-8',
-            'js' => 'application/javascript; charset=UTF-8',
-            'html' => 'text/html; charset=UTF-8',
-            default => 'application/octet-stream',
-        };
-        header('Content-Type: ' . $mime);
-        readfile($widgetFile);
-        exit;
-    }
+if (is_file(__DIR__ . '/xorder-path.php')) {
+    $rootDir = (string) require __DIR__ . '/xorder-path.php';
 }
 
 require_once $rootDir . '/src/autoload.php';
@@ -67,15 +55,17 @@ try {
     $export = new ExportController($app, $authService, $orderRepo, $userRepo, $xlsxExporter);
     $settings = new SettingsController($app, $authService, $userRepo);
     $resetService = new PasswordResetService($app->db, $userRepo, $app->i18n, $app->config);
-    $password = new PasswordController($app, $authService, $resetService);
+    $throttle = new LoginThrottle($app->db);
+    $auth->setThrottle($throttle);
+    $password = new PasswordController($app, $authService, $resetService, $throttle);
     $pages = new PageController($app, $authService);
     $tracker = new TrackController($app, $authService);
+    $features = new FeatureController($app, $authService);
 
     $router = new Router();
 
     // Public routes
     $router->get('/', static fn ($req): Response => $landing->index($req));
-    $router->get('/widget-preview', static fn ($req): Response => $landing->widgetPreview($req));
 
     // Legal pages, password reset and widget analytics
     $router->get('/privacy', static fn ($req): Response => $pages->privacy($req));
@@ -117,10 +107,25 @@ try {
     $router->get('/app/settings', static fn ($req): Response => $settings->index($req));
     $router->post('/app/settings', static fn ($req): Response => $settings->update($req));
 
+    // Cursistfeatures: elk bestand features/<voornaam>.php wordt automatisch een pagina
+    $router->get('/features', static fn ($req): Response => $features->index($req));
+    $router->get('/features/:name', static fn ($req, $params): Response => $features->show($req, $params));
+    $router->post('/features/:name', static fn ($req, $params): Response => $features->show($req, $params));
+
     $response = $router->dispatch($app->request);
     $response->send();
 } catch (Throwable $e) {
     http_response_code(500);
+    // Fouten altijd loggen (buiten de webroot), nooit tonen in productie
+    $logDir = $rootDir . '/storage/logs';
+    if (is_dir($logDir) || @mkdir($logDir, 0775, true)) {
+        @error_log(
+            '[' . date('Y-m-d H:i:s') . '] ' . get_class($e) . ': ' . $e->getMessage()
+            . ' in ' . $e->getFile() . ':' . $e->getLine() . "\n",
+            3,
+            $logDir . '/app.log'
+        );
+    }
     $isLocal = isset($app) && $app->config->isDebug();
     if ($isLocal) {
         echo '<pre style="font-family:monospace;padding:24px;">'

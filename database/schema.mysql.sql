@@ -96,3 +96,12 @@ CREATE TABLE IF NOT EXISTS `order_items` (
     CONSTRAINT `fk_order_items_order` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_order_items_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `action` VARCHAR(20) NOT NULL,
+    `key_hash` CHAR(64) NOT NULL,
+    `created_at` DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_login_attempts_lookup` (`action`, `key_hash`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

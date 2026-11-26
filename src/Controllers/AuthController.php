@@ -6,12 +6,20 @@ namespace App\Controllers;
 
 use App\Core\Request;
 use App\Core\Response;
+use App\Services\LoginThrottle;
 
 /**
  * Login, registration, and logout handlers.
  */
 final class AuthController extends BaseController
 {
+    private ?LoginThrottle $throttle = null;
+
+    public function setThrottle(LoginThrottle $throttle): void
+    {
+        $this->throttle = $throttle;
+    }
+
     public function showLogin(Request $request): Response
     {
         if ($this->auth->currentUser() !== null) {
@@ -34,10 +42,19 @@ final class AuthController extends BaseController
 
         $email = (string) $request->post('email', '');
         $password = (string) $request->post('password', '');
+        $throttleKey = $email . '|' . $request->ip();
+
+        if ($this->throttle !== null && $this->throttle->tooManyAttempts('login', $throttleKey)) {
+            $this->app->session->flash('error', $this->app->i18n->t('auth.too_many_attempts'));
+            return Response::redirect($request->url('/login'));
+        }
 
         if ($this->auth->attemptLogin($email, $password)) {
+            $this->throttle?->clear('login', $throttleKey);
             return Response::redirect($request->url('/app'));
         }
+
+        $this->throttle?->hit('login', $throttleKey);
 
         $this->app->session->flash('error', $this->app->i18n->t('auth.login_failed'));
         return Response::redirect($request->url('/login'));

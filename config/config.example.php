@@ -3,31 +3,38 @@
 declare(strict_types=1);
 
 /**
- * Voorbeeldconfiguratie voor Combell shared hosting (MySQL).
- * Kopieer dit bestand naar config/config.php en vul jouw gegevens in.
+ * Lokale ontwikkelconfiguratie. Werkt meteen na een git clone (SQLite, geen installatie nodig).
+ * Wil je iets aanpassen? Kopieer dit bestand naar config/config.php (staat in .gitignore).
+ *
+ * Voor de server: zie config/config.production.example.php.
  */
 return [
     'app' => [
         'name' => 'XOrder by AssurIO',
-        'version' => '1.0.0',
-        'env' => 'production',
-        'debug' => false,
+        'version' => '1.1.0',
+        'env' => 'local',
+        'debug' => true,
         'timezone' => 'Europe/Brussels',
-        'base_url' => '', // Laat leeg voor automatische detectie of zet bv. '/xorder'
+        'url' => '', // Volledige url zonder slash op het einde, bv. 'https://assurio.be/xorder'. Leeg = automatisch.
+        'base_url' => '', // Leeg voor automatische detectie, of bv. '/xorder' bij een submap
         'default_locale' => 'nl',
         'supported_locales' => ['nl', 'fr'], // Voeg 'en' toe zodra lang/en.php bestaat
         'season_label' => 'Feestseizoen 2026',
-        'mail_from' => 'noreply@jouwdomein.be', // Afzender voor wachtwoord-reset mails (bestaand mailadres op je Combell domein)
+        'mail_from' => 'noreply@localhost',
     ],
     'db' => [
-        'driver' => 'mysql', // 'mysql' voor Combell, 'sqlite' voor snelle lokale test
+        'driver' => 'sqlite',
         'host' => 'localhost',
         'port' => 3306,
-        'database' => 'IDxxxxxx_xorder',
-        'username' => 'IDxxxxxx_xorder',
-        'password' => 'VERANDER_DIT_WACHTWOORD',
+        'database' => 'xorder',
+        'username' => 'root',
+        'password' => '',
         'charset' => 'utf8mb4',
         'sqlite_path' => __DIR__ . '/../storage/xorder.sqlite',
+    ],
+    'features' => [
+        // Pagina's van cursisten in features/<voornaam>.php. Lokaal aan, op productie uit.
+        'enabled' => true,
     ],
     'widget' => [
         'start_date' => '2026-10-15',

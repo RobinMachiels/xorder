@@ -111,12 +111,12 @@ declare(strict_types=1);
                             <td>
                                 <form method="post" action="<?= $e($url('/app/orders/' . $order->id . '/status')) ?>" style="display:grid;gap:6px;min-width:155px;">
                                     <?= $csrfField() ?>
-                                    <select name="status" class="form-select" style="padding:5px 8px;font-size:0.82rem;" onchange="this.form.submit()">
+                                    <select name="status" class="form-select" style="padding:5px 8px;font-size:0.82rem;" data-autosubmit>
                                         <?php foreach (\App\Models\Order::STATUSES as $st): ?>
                                             <option value="<?= $e($st) ?>" <?= $order->status === $st ? 'selected' : '' ?>><?= $e($t('status.' . $st)) ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <select name="payment_status" class="form-select" style="padding:5px 8px;font-size:0.82rem;" onchange="this.form.submit()">
+                                    <select name="payment_status" class="form-select" style="padding:5px 8px;font-size:0.82rem;" data-autosubmit>
                                         <?php foreach (\App\Models\Order::PAYMENT_STATUSES as $pst): ?>
                                             <option value="<?= $e($pst) ?>" <?= $order->paymentStatus === $pst ? 'selected' : '' ?>><?= $e($t('payment.' . $pst)) ?></option>
                                         <?php endforeach; ?>

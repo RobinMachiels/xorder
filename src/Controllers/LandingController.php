@@ -8,7 +8,7 @@ use App\Core\Request;
 use App\Core\Response;
 
 /**
- * Public landing page and interactive AssurIO sticky widget preview.
+ * Public landing page.
  */
 final class LandingController extends BaseController
 {
@@ -24,18 +24,4 @@ final class LandingController extends BaseController
         return Response::html($html);
     }
 
-    public function widgetPreview(Request $request): Response
-    {
-        $html = $this->app->view->render('landing/widget-preview', [
-            'pageTitle' => $this->app->i18n->t('widget_preview.title'),
-            'widgetConfig' => [
-                'startDate' => (string) $this->app->config->get('widget.start_date', '2026-10-15'),
-                'endDate' => (string) $this->app->config->get('widget.end_date', '2027-01-05'),
-                'position' => (string) $this->app->config->get('widget.position', 'bottom-right'),
-                'dismissDays' => (int) $this->app->config->get('widget.dismiss_days', 14),
-            ],
-        ], null);
-
-        return Response::html($html);
-    }
 }

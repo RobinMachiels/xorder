@@ -17,13 +17,14 @@ declare(strict_types=1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $e($t('orders.print_title')) ?> <?= $e($order->orderNumber) ?></title>
+    <link rel="icon" type="image/svg+xml" href="<?= $e($url('/assets/img/xorder-mark.svg')) ?>">
     <link rel="stylesheet" href="<?= $e($url('/assets/css/app.css')) ?>">
 </head>
 <body style="background:#fff;padding:24px;">
 <div class="container" style="max-width:720px;">
     <div class="no-print" style="display:flex;justify-content:space-between;margin-bottom:20px;">
         <a href="<?= $e($url('/app/orders')) ?>" class="btn btn-outline btn-sm"><?= $e($t('orders.print_back')) ?></a>
-        <button type="button" onclick="window.print()" class="btn btn-primary btn-sm"><?= $e($t('orders.print_now')) ?></button>
+        <button type="button" data-print class="btn btn-primary btn-sm"><?= $e($t('orders.print_now')) ?></button>
     </div>
 
     <div class="card" style="border:2px solid var(--pine-900);">
@@ -85,5 +86,6 @@ declare(strict_types=1);
         </div>
     </div>
 </div>
+<script src="<?= $e($url('/assets/js/app.js')) ?>"></script>
 </body>
 </html>

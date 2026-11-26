@@ -18,7 +18,7 @@ declare(strict_types=1);
             <p style="margin:0;color:var(--ink-600);"><?= $e($t('kitchen.subtitle')) ?></p>
         </div>
         <div class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button type="button" onclick="window.print()" class="btn btn-outline"><?= $e($t('kitchen.print')) ?></button>
+            <button type="button" data-print class="btn btn-outline"><?= $e($t('kitchen.print')) ?></button>
             <a href="<?= $e($url('/app/export/xlsx')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
         </div>
     </div>
@@ -26,7 +26,7 @@ declare(strict_types=1);
     <form method="get" action="<?= $e($url('/app/kitchen')) ?>" class="card no-print" style="padding:16px;margin-bottom:20px;display:flex;gap:12px;align-items:end;flex-wrap:wrap;">
         <div style="min-width:240px;">
             <label class="form-label" for="k-date"><?= $e($t('kitchen.filter_date')) ?></label>
-            <select id="k-date" class="form-select" name="pickup_date" onchange="this.form.submit()">
+            <select id="k-date" class="form-select" name="pickup_date" data-autosubmit>
                 <option value=""><?= $e($t('orders.all_dates')) ?></option>
                 <?php foreach ($availableDates as $date): ?>
                     <option value="<?= $e($date) ?>" <?= $selectedDate === $date ? 'selected' : '' ?>><?= $e($date) ?></option>

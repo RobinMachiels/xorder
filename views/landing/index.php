@@ -33,7 +33,7 @@ $mailHref = 'mailto:?subject=' . rawurlencode($t('landing.share_email_subject'))
 
                 <div class="hero-cta-row">
                     <a href="#registreren" class="btn btn-primary"><?= $e($t('landing.hero_cta_primary')) ?></a>
-                    <a href="<?= $e($url('/widget-preview')) ?>" class="btn btn-outline"><?= $e($t('landing.hero_cta_secondary')) ?></a>
+                    <a href="#voordelen" class="btn btn-outline"><?= $e($t('landing.hero_cta_secondary')) ?></a>
                 </div>
 
                 <ul class="trust-list">

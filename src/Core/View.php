@@ -17,6 +17,9 @@ final class View
     private Session $session;
     private Csrf $csrf;
 
+    /** @var array<string, mixed> */
+    private array $shared = [];
+
     /** @var array<int, array{type: string, message: string}>|null */
     private ?array $flashCache = null;
 
@@ -32,6 +35,11 @@ final class View
         $this->request = $request;
         $this->session = $session;
         $this->csrf = $csrf;
+    }
+
+    public function share(string $key, mixed $value): void
+    {
+        $this->shared[$key] = $value;
     }
 
     /**
@@ -69,7 +77,19 @@ final class View
      */
     public function renderPartial(string $template, array $data = []): string
     {
-        $templatePath = $this->viewsDir . '/' . ltrim($template, '/') . '.php';
+        $result = $this->renderFile($this->viewsDir . '/' . ltrim($template, '/') . '.php', $data);
+
+        return $result['html'];
+    }
+
+    /**
+     * Renders any PHP file with the standard helpers. Returns the HTML and the file's return value.
+     *
+     * @param array<string, mixed> $data
+     * @return array{html: string, returned: mixed}
+     */
+    public function renderFile(string $templatePath, array $data = []): array
+    {
         if (!is_file($templatePath)) {
             throw new RuntimeException('Template niet gevonden: ' . $templatePath);
         }
@@ -96,11 +116,12 @@ final class View
         $currentPath = $this->request->path();
 
         extract($data, EXTR_SKIP);
+        extract($this->shared, EXTR_SKIP);
 
         ob_start();
-        require $templatePath;
+        $returned = require $templatePath;
         $output = ob_get_clean();
 
-        return is_string($output) ? $output : '';
+        return ['html' => is_string($output) ? $output : '', 'returned' => $returned];
     }
 }

@@ -9,6 +9,8 @@ namespace App\Core;
  */
 final class I18n
 {
+    private string $cookiePath = '/';
+
     private string $langDir;
     private string $defaultLocale;
 
@@ -72,6 +74,11 @@ final class I18n
         $this->setLocale($this->defaultLocale, $session);
     }
 
+    public function setCookiePath(string $path): void
+    {
+        $this->cookiePath = $path;
+    }
+
     public function setLocale(string $locale, ?Session $session = null): void
     {
         if (!$this->isSupported($locale)) {
@@ -88,7 +95,8 @@ final class I18n
         if (!headers_sent()) {
             setcookie('xorder_lang', $locale, [
                 'expires' => time() + (86400 * 180),
-                'path' => '/',
+                'path' => $this->cookiePath,
+                'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
                 'samesite' => 'Lax',
             ]);
         }

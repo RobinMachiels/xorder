@@ -4,6 +4,10 @@
     var STORAGE_KEY = 'assurio_xorder_dismissed_until';
     var ROOT_ID = 'assurio-xorder-sticky-root';
 
+    // Config komt uit data-attributen op de script-tag (werkt met een strikte CSP, geen inline script nodig):
+    // <script src="/xorder/widget/assurio-xorder-widget.js" data-start="2026-10-15" data-end="2027-01-05" defer></script>
+    var CURRENT_SCRIPT = document.currentScript;
+
     var COPY = {
         nl: {
             badge: 'Feestseizoen 2026 · Gratis',
@@ -14,26 +18,47 @@
             closeLabel: 'Verberg melding'
         },
         fr: {
-            badge: 'Fetes 2026 · Gratuit',
-            pill: 'Traiteur ? Gerez vos commandes de fetes gratuitement',
-            title: 'Commandes de fetes sans tracas, en toute serenite',
+            badge: 'Fêtes 2026 · Gratuit',
+            pill: 'Traiteur ? Gérez vos commandes de fêtes gratuitement',
+            title: 'Commandes de fêtes sans tracas, en toute sérénité',
             desc: 'Pour traiteurs, bouchers et boulangers : 100% gratuit cette saison avec backup Excel local en 1 clic sur votre PC.',
-            cta: 'Decouvrir XOrder by AssurIO',
+            cta: 'Découvrir XOrder by AssurIO',
             closeLabel: 'Masquer'
         }
     };
 
+    function readDataConfig() {
+        var d = (CURRENT_SCRIPT && CURRENT_SCRIPT.dataset) ? CURRENT_SCRIPT.dataset : {};
+        var cfg = {};
+        if (d.start) cfg.startDate = d.start;
+        if (d.end) cfg.endDate = d.end;
+        if (d.target) cfg.targetUrl = d.target;
+        if (d.lang) cfg.lang = d.lang;
+        if (d.position) cfg.position = d.position;
+        if (d.dismissDays) cfg.dismissDays = parseInt(d.dismissDays, 10);
+        if (d.track === 'false') cfg.track = false;
+        return cfg;
+    }
+
+    // Testen op de live site buiten het seizoen of na wegklikken: voeg ?xorder-knop=toon toe aan de url
+    function forcedByUrl() {
+        try {
+            return /[?&]xorder-knop=toon(&|$)/.test(window.location.search);
+        } catch (e) {
+            return false;
+        }
+    }
+
     function getDefaultConfig() {
-        var userCfg = window.AssurioXOrderConfig || {};
+        var userCfg = Object.assign({}, window.AssurioXOrderConfig || {}, readDataConfig());
         return {
             startDate: userCfg.startDate || '2026-10-15',
             endDate: userCfg.endDate || '2027-01-05',
-            targetUrl: userCfg.targetUrl || 'https://xorder.assurio.be/',
+            targetUrl: userCfg.targetUrl || 'https://assurio.be/xorder/',
             lang: userCfg.lang || 'auto',
             position: userCfg.position || 'bottom-right',
-            dismissDays: typeof userCfg.dismissDays === 'number' ? userCfg.dismissDays : 14,
-            forceShow: Boolean(userCfg.forceShow),
-            simulateOutsideSeason: Boolean(userCfg.simulateOutsideSeason),
+            dismissDays: typeof userCfg.dismissDays === 'number' && !isNaN(userCfg.dismissDays) ? userCfg.dismissDays : 14,
+            forceShow: Boolean(userCfg.forceShow) || forcedByUrl(),
             track: userCfg.track !== false,
             trackUrl: userCfg.trackUrl || ''
         };
@@ -69,8 +94,11 @@
     }
 
     function isWithinSeason(startStr, endStr) {
+        // Lokale datum van de bezoeker (toISOString zou UTC geven en rond middernacht een dag verschuiven)
         var now = new Date();
-        var today = now.toISOString().slice(0, 10);
+        var today = now.getFullYear() + '-'
+            + String(now.getMonth() + 1).padStart(2, '0') + '-'
+            + String(now.getDate()).padStart(2, '0');
         return today >= startStr && today <= endStr;
     }
 
@@ -105,9 +133,6 @@
         unmount();
 
         var cfg = Object.assign({}, getDefaultConfig(), overrideConfig || {});
-        if (cfg.simulateOutsideSeason) {
-            return false;
-        }
         if (!cfg.forceShow && !isWithinSeason(cfg.startDate, cfg.endDate)) {
             return false;
         }
@@ -177,7 +202,17 @@
 
         var icon = document.createElement('span');
         icon.className = 'assurio-xorder-pill-icon';
-        icon.textContent = '★';
+        var svgNS = 'http://www.w3.org/2000/svg';
+        var iconSvg = document.createElementNS(svgNS, 'svg');
+        iconSvg.setAttribute('width', '15');
+        iconSvg.setAttribute('height', '15');
+        iconSvg.setAttribute('viewBox', '0 0 24 24');
+        iconSvg.setAttribute('aria-hidden', 'true');
+        var starPath = document.createElementNS(svgNS, 'path');
+        starPath.setAttribute('d', 'M12 2.5 Q13.1 10.9 21.5 12 Q13.1 13.1 12 21.5 Q10.9 13.1 2.5 12 Q10.9 10.9 12 2.5 Z');
+        starPath.setAttribute('fill', '#ffffff');
+        iconSvg.appendChild(starPath);
+        icon.appendChild(iconSvg);
 
         var label = document.createElement('span');
         label.textContent = text.pill;

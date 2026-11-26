@@ -26,6 +26,16 @@
         });
     });
 
+    // Print buttons and auto-submit selects (no inline handlers: CSP blocks them)
+    document.querySelectorAll('[data-print]').forEach(function (btn) {
+        btn.addEventListener('click', function () { window.print(); });
+    });
+    document.querySelectorAll('[data-autosubmit]').forEach(function (el) {
+        el.addEventListener('change', function () {
+            if (el.form) el.form.submit();
+        });
+    });
+
     // Confirmation prompts
     document.querySelectorAll('[data-confirm]').forEach(function (el) {
         el.addEventListener('click', function (ev) {

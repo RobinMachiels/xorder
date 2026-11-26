@@ -12,6 +12,13 @@ declare(strict_types=1);
 <section class="section">
     <div class="container" style="max-width:520px;">
         <div class="card" style="box-shadow:var(--shadow-md);">
+            <div class="auth-card-brand">
+                <img src="<?= $e($url('/assets/img/xorder-mark.svg')) ?>" alt="" width="42" height="42">
+                <span class="brand-wordmark">
+                    <span class="brand-name" style="font-size:1.22rem;"><?= $e($t('brand.name')) ?></span>
+                    <span class="brand-sub"><?= $e($t('brand.by')) ?></span>
+                </span>
+            </div>
             <span class="badge badge-gold"><?= $e($t('landing.badge')) ?></span>
             <h1 style="margin:12px 0 6px;font-size:1.55rem;"><?= $e($t('auth.register_title')) ?></h1>
             <p style="margin:0 0 22px;color:var(--ink-600);"><?= $e($t('auth.register_subtitle')) ?></p>

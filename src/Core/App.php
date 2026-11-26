@@ -27,17 +27,23 @@ final class App
         $migrator = new Migrator($this->db, $this->rootDir);
         $migrator->ensureSchema();
 
+        $this->request = Request::capture(
+            (string) $this->config->get('app.base_url', ''),
+            (string) $this->config->get('app.url', '')
+        );
+
+        // Cookie enkel geldig voor deze app (bv. /xorder/), niet voor de rest van het domein
         $this->session = new Session();
-        $this->session->start();
+        $this->session->start(rtrim($this->request->basePath(), '/') . '/');
 
         $this->csrf = new Csrf($this->session);
-        $this->request = Request::capture((string) $this->config->get('app.base_url', ''));
 
         /** @var array<int, string> $supportedLocales */
         $supportedLocales = (array) $this->config->get('app.supported_locales', ['nl', 'fr']);
         $defaultLocale = (string) $this->config->get('app.default_locale', 'nl');
 
         $this->i18n = new I18n($this->rootDir . '/lang', $defaultLocale, $supportedLocales);
+        $this->i18n->setCookiePath(rtrim($this->request->basePath(), '/') . '/');
         $this->i18n->resolve($this->request, $this->session);
 
         $this->view = new View(
@@ -46,6 +52,12 @@ final class App
             $this->request,
             $this->session,
             $this->csrf
+        );
+
+        $featuresEnabled = (bool) $this->config->get('features.enabled', false);
+        $this->view->share(
+            'featureNames',
+            $featuresEnabled ? FeatureRegistry::names($this->rootDir . '/features') : []
         );
     }
 }
