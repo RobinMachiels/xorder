@@ -15,32 +15,18 @@ Je pagina verschijnt vanzelf op `/features/<voornaam>` en in het menu **Features
 
 Een automatische controle (GitHub Actions) keurt je pull request af als je een ander bestand aanraakt.
 
-## Zo werk je
+## Zo werk je (in VS Code)
 
-```bash
-# 1. Fork de repo op GitHub, clone daarna JOUW fork
-git clone https://github.com/<jouw-account>/xorder.git
-cd xorder
-
-# 2. Eigen branch
-git checkout -b feature/<voornaam>
-
-# 3. Start lokaal (SQLite, geen installatie nodig)
-php -S 127.0.0.1:8787 -t public
-
-# 4. Kopieer het voorbeeld
-cp features/voorbeeld.php features/<voornaam>.php
-cp -r public/features/voorbeeld public/features/<voornaam>
-
-# 5. Committen en pushen naar je fork
-git add features/<voornaam>.php public/features/<voornaam>
-git commit -m "feat(<voornaam>): korte beschrijving"
-git push -u origin feature/<voornaam>
-```
-
-Open daarna op GitHub een pull request van `feature/<voornaam>` naar `main` van de originele repo.
-
-Gebruik `git add` altijd met je eigen paden, nooit `git add .`: zo neem je niet per ongeluk een ander bestand mee.
+1. **Clonen:** `Ctrl+Shift+P` (Mac: `Cmd+Shift+P`), kies **Git: Clone** en plak `https://github.com/mdenitti/xorder.git`.
+2. **Branch:** klik linksonder op `main`, kies **Create new branch...** en typ `feature/<voornaam>`.
+3. **Starten:** open **Terminal > New Terminal** en typ `php -S 127.0.0.1:8787 -t public`.
+4. **Voorbeeld kopiëren:** kopieer `features/voorbeeld.php` naar `features/<voornaam>.php` en de map `public/features/voorbeeld` naar `public/features/<voornaam>`. Bouw je feature.
+5. **Stagen:** in **Source Control** klik je op de **+** naast elk van jouw eigen bestanden. Nooit **Stage All Changes**.
+6. **Committen:** bericht `feat(<voornaam>): korte beschrijving`, dan **Commit**. Vraagt VS Code om alles te stagen? Kies **No**.
+7. **Publiceren:** klik op **Publish Branch**. Je hebt geen schrijfrechten op deze repo, dus VS Code stelt voor een fork te maken: kies **Create Fork**.
+8. **Pull request:** klik op **Create PR** in de melding van VS Code. Met **Open on GitHub** bekijk je je PR op github.com.
+9. **Feedback verwerken:** aanpassen, stagen, committen en **Sync Changes**. Je PR werkt zichzelf bij.
+10. **Na de merge:** ga naar `main`, kies **Git: Pull from...**, dan de remote `upstream` (de repo van de docent) en `main`.
 
 ## Afspraken in je code
 
