@@ -1,0 +1,196 @@
+/* AssurIO Seasonal "Kerstdorp" Sticky Button for XOrder by AssurIO */
+.assurio-xorder-wrap {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    z-index: 2147483000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.4;
+}
+
+.assurio-xorder-wrap.assurio-xorder-pos-left {
+    right: auto;
+    left: 22px;
+    align-items: flex-start;
+}
+
+.assurio-xorder-card {
+    width: 300px;
+    background: #14332b;
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 16px 38px rgba(12, 33, 27, 0.34);
+    border: 1px solid rgba(200, 138, 46, 0.45);
+    display: none;
+}
+
+.assurio-xorder-wrap.is-expanded .assurio-xorder-card {
+    display: block;
+    animation: assurioXOrderPop 0.2s ease-out;
+}
+
+@keyframes assurioXOrderPop {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.assurio-xorder-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.assurio-xorder-badge {
+    display: inline-block;
+    background: rgba(200, 138, 46, 0.22);
+    color: #f8d48b;
+    border: 1px solid rgba(248, 212, 139, 0.35);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+}
+
+.assurio-xorder-card-title {
+    margin: 0 0 6px;
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.assurio-xorder-card-desc {
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.assurio-xorder-card-cta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: #c88a2e;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    font-weight: 700;
+    font-size: 13.5px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    transition: background-color 0.15s ease;
+}
+
+.assurio-xorder-card-cta:hover {
+    background: #b2771f;
+}
+
+.assurio-xorder-pill-row {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #14332b, #1d473c);
+    color: #ffffff;
+    border: 1.5px solid rgba(200, 138, 46, 0.65);
+    border-radius: 999px;
+    box-shadow: 0 10px 26px rgba(12, 33, 27, 0.32);
+    overflow: hidden;
+}
+
+.assurio-xorder-pill-btn {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 14px 10px 14px;
+    font-size: 13.5px;
+    font-weight: 700;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.assurio-xorder-pill-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #c88a2e;
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.assurio-xorder-dismiss {
+    appearance: none;
+    background: rgba(255, 255, 255, 0.08);
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    width: 34px;
+    height: 44px;
+    font-size: 16px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.assurio-xorder-dismiss:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+.assurio-xorder-close-card {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+@media (max-width: 560px) {
+    .assurio-xorder-wrap {
+        left: 14px;
+        right: 14px;
+        bottom: 14px;
+        align-items: stretch;
+    }
+    .assurio-xorder-wrap.assurio-xorder-pos-left {
+        left: 14px;
+        right: 14px;
+        align-items: stretch;
+    }
+    .assurio-xorder-card {
+        width: 100%;
+    }
+    .assurio-xorder-pill-row {
+        justify-content: space-between;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .assurio-xorder-wrap.is-expanded .assurio-xorder-card {
+        animation: none;
+    }
+}
