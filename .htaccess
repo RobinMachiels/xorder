@@ -1,0 +1,22 @@
+# Combell shared hosting root protection & rewrite to public/
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct access to internal directories
+    RewriteRule ^(config|database|lang|src|storage|views)(/|$) - [F,L]
+
+    # Route widget assets directly if requested under /widget/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteCond %{REQUEST_URI} !^/widget/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+<FilesMatch "\.(sql|sqlite|log|md)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>

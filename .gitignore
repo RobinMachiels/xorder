@@ -1,0 +1,14 @@
+# Local config (keep config.example.php tracked)
+/config/config.php
+
+# Local SQLite database and logs
+/storage/*.sqlite
+/storage/*.sqlite-*
+/storage/*.log
+/storage/tmp/*
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+/.idea/
+/.vscode/
