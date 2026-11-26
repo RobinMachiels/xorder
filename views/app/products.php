@@ -20,7 +20,7 @@ declare(strict_types=1);
 
     <div class="card" style="margin-bottom:22px;">
         <h2 style="margin:0 0 14px;font-size:1.15rem;"><?= $e($t('products.add_title')) ?></h2>
-        <form method="post" action="<?= $e($url('/app/products')) ?>" style="display:grid;grid-template-columns:2fr 1.2fr 1fr 1fr auto;gap:10px;align-items:end;">
+        <form method="post" action="<?= $e($url('/app/products')) ?>" class="product-add-form">
             <?= $csrfField() ?>
             <div>
                 <label class="form-label" for="p-name"><?= $e($t('products.name')) ?> *</label>
@@ -63,7 +63,7 @@ declare(strict_types=1);
                     <?php foreach ($products as $prod): ?>
                         <tr>
                             <td colspan="6" style="padding:8px 12px;">
-                                <form method="post" action="<?= $e($url('/app/products/' . $prod->id . '/update')) ?>" style="display:grid;grid-template-columns:2fr 1.2fr 0.9fr 0.9fr 0.8fr auto;gap:8px;align-items:center;">
+                                <form method="post" action="<?= $e($url('/app/products/' . $prod->id . '/update')) ?>" class="product-edit-form">
                                     <?= $csrfField() ?>
                                     <input class="form-control" type="text" name="name" value="<?= $e($prod->name) ?>" required>
                                     <input class="form-control" type="text" name="category" value="<?= $e($prod->category) ?>">

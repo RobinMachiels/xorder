@@ -87,7 +87,9 @@ declare(strict_types=1);
         <div>
             <strong><?= $e($t('brand.full')) ?></strong> · <?= $e($t('footer.tagline')) ?>
         </div>
-        <div style="display:flex;gap:16px;align-items:center;">
+        <div class="footer-links">
+            <a href="<?= $e($url('/privacy')) ?>"><?= $e($t('footer.privacy')) ?></a>
+            <a href="<?= $e($url('/cookies')) ?>"><?= $e($t('footer.cookies')) ?></a>
             <a href="<?= $e($url('/widget-preview')) ?>"><?= $e($t('nav.widget_preview')) ?></a>
             <a href="<?= $e($url('/')) ?>"><?= $e($t('nav.back_to_site')) ?></a>
             <span><?= $e($t('footer.rights')) ?></span>

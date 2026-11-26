@@ -137,6 +137,7 @@ declare(strict_types=1);
             color: #f8d48b;
         }
         @media (max-width: 820px) {
+            .preview-toolbar { position: static; }
             .mock-section { grid-template-columns: 1fr; }
             .mock-links { display: none; }
         }
@@ -216,7 +217,8 @@ window.AssurioXOrderConfig = {
     lang: <?= json_encode($locale) ?>,
     position: <?= json_encode($widgetConfig['position']) ?>,
     dismissDays: <?= (int) $widgetConfig['dismissDays'] ?>,
-    forceShow: false
+    forceShow: false,
+    track: false
 };
 </script>
 <script src="<?= $e($url('/widget/assurio-xorder-widget.js')) ?>"></script>
@@ -235,6 +237,7 @@ window.AssurioXOrderConfig = {
             position: posSel.value,
             targetUrl: <?= json_encode($url('/')) ?>,
             forceShow: !outside,
+            track: false,
             simulateOutsideSeason: outside
         });
         badge.textContent = mounted ? 'Zichtbaar' : 'Verborgen';
