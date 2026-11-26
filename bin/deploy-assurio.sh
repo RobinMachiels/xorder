@@ -39,7 +39,7 @@ if [[ -z "$DRY" ]]; then
 fi
 
 echo ">> App-code naar $APP_DIR"
-rsync -az --delete $DRY \
+rsync -az --delete --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r $DRY \
     --exclude '.git/' --exclude '.github/' --exclude '.gitignore' \
     --exclude 'public/' --exclude 'dist/' --exclude 'mcp-crashcourse/' \
     --exclude 'features/' --exclude 'widget/' \
@@ -48,7 +48,7 @@ rsync -az --delete $DRY \
     ./ "$SSH_HOST:$APP_DIR/"
 
 echo ">> Webroot naar $WEB_DIR"
-rsync -az --delete $DRY \
+rsync -az --delete --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r $DRY \
     --exclude 'features/' --exclude 'xorder-path.php' --exclude '.DS_Store' \
     public/ "$SSH_HOST:$WEB_DIR/"
 

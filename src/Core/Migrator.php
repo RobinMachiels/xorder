@@ -55,7 +55,11 @@ final class Migrator
             return $row !== null;
         }
 
-        $row = $this->db->fetchOne('SHOW TABLES LIKE ?', [$tableName]);
+        // SHOW TABLES LIKE ? werkt niet als echte prepared statement in MySQL
+        $row = $this->db->fetchOne(
+            'SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+            [$tableName]
+        );
         return $row !== null;
     }
 
