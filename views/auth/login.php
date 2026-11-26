@@ -29,6 +29,7 @@ declare(strict_types=1);
                 </div>
 
                 <button type="submit" class="btn btn-primary" style="width:100%;margin-top:6px;"><?= $e($t('auth.login_btn')) ?></button>
+                <a class="form-link" href="<?= $e($url('/forgot')) ?>"><?= $e($t('auth.forgot_link')) ?></a>
             </form>
 
             <p style="margin:18px 0 0;font-size:0.9rem;color:var(--ink-600);text-align:center;">

@@ -22,7 +22,8 @@ final class Migrator
 
     public function ensureSchema(): void
     {
-        if ($this->tableExists('users')) {
+        // Schema files use CREATE TABLE IF NOT EXISTS, so re-running adds newer tables to existing installs.
+        if ($this->tableExists('widget_events')) {
             return;
         }
 

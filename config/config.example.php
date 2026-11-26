@@ -17,6 +17,7 @@ return [
         'default_locale' => 'nl',
         'supported_locales' => ['nl', 'fr'], // Voeg 'en' toe zodra lang/en.php bestaat
         'season_label' => 'Feestseizoen 2026',
+        'mail_from' => 'noreply@jouwdomein.be', // Afzender voor wachtwoord-reset mails (bestaand mailadres op je Combell domein)
     ],
     'db' => [
         'driver' => 'mysql', // 'mysql' voor Combell, 'sqlite' voor snelle lokale test
