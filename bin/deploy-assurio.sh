@@ -34,7 +34,9 @@ if command -v php >/dev/null 2>&1; then
     echo ">> PHP syntax OK"
 fi
 
-ssh "$SSH_HOST" "mkdir -p '$APP_DIR/storage/logs' '$WEB_DIR'"
+if [[ -z "$DRY" ]]; then
+    ssh "$SSH_HOST" "mkdir -p '$APP_DIR/storage/logs' '$WEB_DIR'"
+fi
 
 echo ">> App-code naar $APP_DIR"
 rsync -az --delete $DRY \
