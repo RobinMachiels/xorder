@@ -39,3 +39,10 @@ De knop verschijnt automatisch enkel tussen `startDate` (`2026-10-15`) en `endDa
 
 1. Kopieer `lang/en.php.example` naar `lang/en.php` en vertaal alle sleutels uit `lang/nl.php`.
 2. Voeg `'en'` toe aan `'supported_locales' => ['nl', 'fr', 'en']` in `config/config.php`.
+
+## 5. Extra's
+
+- **Wachtwoord vergeten:** `/forgot` en `/reset/<token>` (token 1 uur geldig, eenmalig, enkel gehasht opgeslagen). In debug-modus toont de pagina de resetlink lokaal rechtstreeks.
+- **Juridische pagina's:** `/privacy` en `/cookies` (NL/FR).
+- **Statistieken seizoensknop:** anonieme tellers (getoond, uitgeklapt, aangeklikt, weggeklikt). Bekijk met `php bin/widget-stats.php`.
+- **Deploypakket voor Combell:** `bash bin/build-deploy.sh`, daarna de stappen in [DEPLOY.md](DEPLOY.md). Er wordt niets automatisch geupload.
