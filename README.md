@@ -16,6 +16,22 @@ php -S 127.0.0.1:8787 -t public
 
 Zonder `config/config.php` gebruikt de app `config/config.example.php` (SQLite in `storage/xorder.sqlite`, debug aan). Tabellen worden automatisch aangemaakt bij het eerste verzoek.
 
+### Dummydata laden
+
+```bash
+php bin/seed.php
+```
+
+Vult je lokale database met [database/seed.sql](database/seed.sql): drie zaken, 20 producten en 22 bestellingen verspreid over alle feestdagen, tijdsloten, statussen en betaalstatussen. Werkt met SQLite en MySQL, zonder extra tools.
+
+| Account | Zaak | Taal |
+| --- | --- | --- |
+| `traiteur@voorbeeld.test` | Traiteur De Gouden Lepel (12 bestellingen) | NL |
+| `slager@voorbeeld.test` | Slagerij Van Damme (6 bestellingen) | NL |
+| `bakker@voorbeeld.test` | Boulangerie Le Petit Four (4 bestellingen) | FR |
+
+Wachtwoord voor alle drie: `xorder123`. Let op: het script wist eerst alle bestaande rijen, zodat iedereen vanaf dezelfde beginsituatie vertrekt. Draai het opnieuw wanneer je je data wil resetten. Op productie weigert het script (`app.env = production`) en de bestanden gaan niet mee met de deploy.
+
 ## 2. Features van cursisten
 
 Elke cursist maakt `features/<voornaam>.php` met eigen assets in `public/features/<voornaam>/`.

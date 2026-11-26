@@ -43,6 +43,7 @@ rsync -az --delete --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r $DRY \
     --exclude '.git/' --exclude '.github/' --exclude '.gitignore' \
     --exclude 'public/' --exclude 'dist/' --exclude 'mcp-crashcourse/' \
     --exclude 'features/' --exclude 'widget/' \
+    --exclude 'database/seed.sql' --exclude 'bin/seed.php' \
     --exclude 'config/config.php' --exclude 'storage/' \
     --exclude '.DS_Store' --exclude '*.md' --exclude '.htaccess' \
     ./ "$SSH_HOST:$APP_DIR/"

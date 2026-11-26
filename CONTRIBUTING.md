@@ -19,7 +19,7 @@ Een automatische controle (GitHub Actions) keurt je pull request af als je een a
 
 1. **Clonen:** `Ctrl+Shift+P` (Mac: `Cmd+Shift+P`), kies **Git: Clone** en plak `https://github.com/mdenitti/xorder.git`.
 2. **Branch:** klik linksonder op `main`, kies **Create new branch...** en typ `feature/<voornaam>`.
-3. **Starten:** open **Terminal > New Terminal** en typ `php -S 127.0.0.1:8787 -t public`.
+3. **Starten:** open **Terminal > New Terminal**, typ eenmalig `php bin/seed.php` voor testdata en start dan de server met `php -S 127.0.0.1:8787 -t public`. Meld je aan met `traiteur@voorbeeld.test` en wachtwoord `xorder123` (meer accounts in de [README](README.md#dummydata-laden)).
 4. **Voorbeeld kopiëren:** kopieer `features/voorbeeld.php` naar `features/<voornaam>.php` en de map `public/features/voorbeeld` naar `public/features/<voornaam>`. Bouw je feature.
 5. **Stagen:** in **Source Control** klik je op de **+** naast elk van jouw eigen bestanden. Nooit **Stage All Changes**.
 6. **Committen:** bericht `feat(<voornaam>): korte beschrijving`, dan **Commit**. Vraagt VS Code om alles te stagen? Kies **No**.
