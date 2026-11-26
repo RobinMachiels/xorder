@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * English translation template for XOrder by AssurIO.
+ *
+ * How to enable English later:
+ * 1. Copy this file to `lang/en.php` and translate all keys from `lang/nl.php`.
+ * 2. Add `'en'` to `app.supported_locales` in `config/config.php` (e.g. ['nl', 'fr', 'en']).
+ * 3. Add the `'en'` copy block in `widget/assurio-xorder-widget.js` if you want the sticky widget in EN too.
+ */
+return [
+    'brand.name' => 'XOrder',
+    'brand.by' => 'by AssurIO',
+    'brand.full' => 'XOrder by AssurIO',
+    'landing.badge' => 'Holiday Season 2026 · 100% Free Launch Edition',
+    'landing.hero_title' => 'Caterer, butcher or baker? Manage your holiday orders effortlessly and with complete peace of mind.',
+    'landing.hero_subtitle' => 'No more loose paper slips or messy spreadsheets. Track every order by pickup day and product, and download a clean local Excel backup to your own computer anytime.',
+    'landing.hero_cta_primary' => 'Start free for this holiday season',
+];
