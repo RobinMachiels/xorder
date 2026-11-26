@@ -33,8 +33,31 @@
             position: userCfg.position || 'bottom-right',
             dismissDays: typeof userCfg.dismissDays === 'number' ? userCfg.dismissDays : 14,
             forceShow: Boolean(userCfg.forceShow),
-            simulateOutsideSeason: Boolean(userCfg.simulateOutsideSeason)
+            simulateOutsideSeason: Boolean(userCfg.simulateOutsideSeason),
+            track: userCfg.track !== false,
+            trackUrl: userCfg.trackUrl || ''
         };
+    }
+
+    // Anonymous counters: no cookies, no IP, no personal data (see privacy page).
+    function sendEvent(cfg, eventName, lang) {
+        if (!cfg.track) return;
+        try {
+            var base = cfg.targetUrl.replace(/\?.*$/, '').replace(/\/?$/, '/');
+            var url = cfg.trackUrl || (base + 'track');
+            var payload = JSON.stringify({
+                event: eventName,
+                lang: lang,
+                host: window.location.hostname
+            });
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(url, payload);
+            } else if (window.fetch) {
+                window.fetch(url, { method: 'POST', body: payload, keepalive: true, mode: 'no-cors' });
+            }
+        } catch (e) {
+            // Tracking must never break the host page
+        }
     }
 
     function resolveLang(langCfg) {
@@ -133,8 +156,12 @@
 
         var cta = document.createElement('a');
         cta.className = 'assurio-xorder-card-cta';
-        cta.href = cfg.targetUrl + (cfg.targetUrl.indexOf('?') === -1 ? '?lang=' + lang : '&lang=' + lang);
+        cta.href = cfg.targetUrl + (cfg.targetUrl.indexOf('?') === -1 ? '?lang=' + lang : '&lang=' + lang)
+            + '&utm_source=assurio-site&utm_medium=sticky-button&utm_campaign=feestseizoen-2026';
         cta.textContent = text.cta + ' ->';
+        cta.addEventListener('click', function () {
+            sendEvent(cfg, 'click', lang);
+        });
 
         card.appendChild(cardHead);
         card.appendChild(title);
@@ -158,7 +185,10 @@
         pillBtn.appendChild(icon);
         pillBtn.appendChild(label);
         pillBtn.addEventListener('click', function () {
-            wrap.classList.toggle('is-expanded');
+            var expanded = wrap.classList.toggle('is-expanded');
+            if (expanded) {
+                sendEvent(cfg, 'expand', lang);
+            }
         });
 
         var dismissBtn = document.createElement('button');
@@ -169,6 +199,7 @@
         dismissBtn.textContent = '×';
         dismissBtn.addEventListener('click', function (ev) {
             ev.stopPropagation();
+            sendEvent(cfg, 'dismiss', lang);
             dismissFor(cfg.dismissDays);
             unmount();
         });
@@ -179,6 +210,16 @@
         wrap.appendChild(card);
         wrap.appendChild(pillRow);
         document.body.appendChild(wrap);
+
+        // Count one impression per browser session
+        try {
+            if (!window.sessionStorage.getItem('assurio_xorder_seen')) {
+                window.sessionStorage.setItem('assurio_xorder_seen', '1');
+                sendEvent(cfg, 'impression', lang);
+            }
+        } catch (e) {
+            sendEvent(cfg, 'impression', lang);
+        }
         return true;
     }
 

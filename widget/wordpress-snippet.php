@@ -42,6 +42,7 @@ add_action('wp_enqueue_scripts', static function (): void {
             'lang' => 'auto',
             'position' => 'bottom-right',
             'dismissDays' => 14,
+            'track' => true,
         ])
     );
 

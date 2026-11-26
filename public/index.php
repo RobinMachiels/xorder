@@ -8,6 +8,10 @@ use App\Controllers\ExportController;
 use App\Controllers\KitchenController;
 use App\Controllers\LandingController;
 use App\Controllers\OrderController;
+use App\Controllers\PageController;
+use App\Controllers\PasswordController;
+use App\Controllers\TrackController;
+use App\Services\PasswordResetService;
 use App\Controllers\ProductController;
 use App\Controllers\SettingsController;
 use App\Core\App;
@@ -62,12 +66,25 @@ try {
     $kitchen = new KitchenController($app, $authService, $orderRepo);
     $export = new ExportController($app, $authService, $orderRepo, $userRepo, $xlsxExporter);
     $settings = new SettingsController($app, $authService, $userRepo);
+    $resetService = new PasswordResetService($app->db, $userRepo, $app->i18n, $app->config);
+    $password = new PasswordController($app, $authService, $resetService);
+    $pages = new PageController($app, $authService);
+    $tracker = new TrackController($app, $authService);
 
     $router = new Router();
 
     // Public routes
     $router->get('/', static fn ($req): Response => $landing->index($req));
     $router->get('/widget-preview', static fn ($req): Response => $landing->widgetPreview($req));
+
+    // Legal pages, password reset and widget analytics
+    $router->get('/privacy', static fn ($req): Response => $pages->privacy($req));
+    $router->get('/cookies', static fn ($req): Response => $pages->cookies($req));
+    $router->get('/forgot', static fn ($req): Response => $password->showForgot($req));
+    $router->post('/forgot', static fn ($req): Response => $password->forgot($req));
+    $router->get('/reset/:token', static fn ($req, $params): Response => $password->showReset($req, $params));
+    $router->post('/reset/:token', static fn ($req, $params): Response => $password->reset($req, $params));
+    $router->post('/track', static fn ($req): Response => $tracker->track($req));
 
     // Auth routes
     $router->get('/login', static fn ($req): Response => $auth->showLogin($req));
