@@ -23,8 +23,8 @@ declare(strict_types=1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $e($pageTitle) ?> | <?= $e($t('brand.full')) ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= $e($url('/assets/img/xorder-mark.svg')) ?>">
-    <link rel="stylesheet" href="<?= $e($url('/assets/css/app.css')) ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= $e($assetUrl('/assets/img/xorder-mark.svg')) ?>">
+    <link rel="stylesheet" href="<?= $e($assetUrl('/assets/css/app.css')) ?>">
 </head>
 <body>
 <header class="site-header no-print">
@@ -106,7 +106,7 @@ declare(strict_types=1);
 <footer class="site-footer no-print">
     <div class="container footer-inner">
         <div class="footer-brand">
-            <img src="<?= $e($url('/assets/img/xorder-mark.svg')) ?>" alt="" width="26" height="26" class="footer-logo-mark">
+            <img src="<?= $e($assetUrl('/assets/img/xorder-mark.svg')) ?>" alt="" width="26" height="26" class="footer-logo-mark">
             <span><strong><?= $e($t('brand.full')) ?></strong> · <?= $e($t('footer.tagline')) ?></span>
         </div>
         <div class="footer-links">
@@ -118,6 +118,6 @@ declare(strict_types=1);
     </div>
 </footer>
 
-<script src="<?= $e($url('/assets/js/app.js')) ?>"></script>
+<script src="<?= $e($assetUrl('/assets/js/app.js')) ?>"></script>
 </body>
 </html>

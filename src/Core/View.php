@@ -109,6 +109,15 @@ final class View
         $csrfField = function (): string {
             return $this->csrf->field();
         };
+        // Url naar een bestand in public/ met ?v=<wijzigingstijd>, zodat browsers na elke deploy
+        // de nieuwe css/js ophalen ondanks de cache van een dag (zie public/.htaccess).
+        $assetUrl = function (string $path): string {
+            $publicDir = defined('XORDER_PUBLIC_DIR') ? (string) XORDER_PUBLIC_DIR : dirname($this->viewsDir) . '/public';
+            $mtime = @filemtime($publicDir . '/' . ltrim($path, '/'));
+            $href = $this->request->url($path);
+
+            return $mtime === false ? $href : $href . '?v=' . $mtime;
+        };
 
         $locale = $this->i18n->locale();
         $supportedLocales = $this->i18n->supportedLocales();

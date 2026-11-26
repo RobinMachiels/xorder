@@ -33,6 +33,9 @@ if (is_file(__DIR__ . '/xorder-path.php')) {
     $rootDir = (string) require __DIR__ . '/xorder-path.php';
 }
 
+// Webroot (public/) voor cache-busting van css/js, ook als de app-code elders staat
+define('XORDER_PUBLIC_DIR', __DIR__);
+
 require_once $rootDir . '/src/autoload.php';
 
 try {

@@ -17,8 +17,8 @@ declare(strict_types=1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $e($t('orders.print_title')) ?> <?= $e($order->orderNumber) ?></title>
-    <link rel="icon" type="image/svg+xml" href="<?= $e($url('/assets/img/xorder-mark.svg')) ?>">
-    <link rel="stylesheet" href="<?= $e($url('/assets/css/app.css')) ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= $e($assetUrl('/assets/img/xorder-mark.svg')) ?>">
+    <link rel="stylesheet" href="<?= $e($assetUrl('/assets/css/app.css')) ?>">
 </head>
 <body style="background:#fff;padding:24px;">
 <div class="container" style="max-width:720px;">
@@ -86,6 +86,6 @@ declare(strict_types=1);
         </div>
     </div>
 </div>
-<script src="<?= $e($url('/assets/js/app.js')) ?>"></script>
+<script src="<?= $e($assetUrl('/assets/js/app.js')) ?>"></script>
 </body>
 </html>
