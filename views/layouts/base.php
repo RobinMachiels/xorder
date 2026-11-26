@@ -30,7 +30,7 @@ declare(strict_types=1);
 <header class="site-header no-print">
     <div class="container header-inner">
         <a href="<?= $e($url($user !== null ? '/app' : '/')) ?>" class="brand-mark">
-            <svg class="brand-logo-svg" width="46" height="46" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+            <svg class="brand-logo-svg" width="62" height="50" viewBox="3 7 42 34" aria-hidden="true" focusable="false">
                 <defs>
                   <linearGradient id="xo-hdr-pine" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
                     <stop offset="0" stop-color="#1f4d41"/><stop offset=".55" stop-color="#14332b"/><stop offset="1" stop-color="#0c211b"/>

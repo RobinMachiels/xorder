@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 236 52" width="236" height="52" role="img" aria-label="XOrder by AssurIO">
-  <g transform="translate(2, 2)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 52" width="252" height="52" role="img" aria-label="XOrder by AssurIO">
+  <svg x="2" y="1" width="62" height="50" viewBox="3 7 42 34" overflow="visible">
     <defs>
       <linearGradient id="xol-pine" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
         <stop offset="0" stop-color="#1f4d41"/><stop offset=".55" stop-color="#14332b"/><stop offset="1" stop-color="#0c211b"/>
@@ -13,7 +13,7 @@
     <path d="M24.4 18.4 L13.6 29.6" stroke="#f6efe1" stroke-width="3.4" stroke-linecap="round" fill="none"/>
     <path d="M13.6 18.4 L24.4 29.6" stroke="url(#xol-gold)" stroke-width="3.4" stroke-linecap="round" fill="none"/>
     <path d="M38.5 20.6 Q38.85 23.65 41.9 24 Q38.85 24.35 38.5 27.4 Q38.15 24.35 35.1 24 Q38.15 23.65 38.5 20.6 Z" fill="#e9be6c"/>
-  </g>
-  <text x="61" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.45" fill="#0c211b">XOrder</text>
-  <text x="62" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#b2771f">BY ASSURIO</text>
+  </svg>
+  <text x="76" y="28" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.45" fill="#0c211b">XOrder</text>
+  <text x="77" y="42" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" letter-spacing="2" fill="#b2771f">BY ASSURIO</text>
 </svg>
