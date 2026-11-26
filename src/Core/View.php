@@ -17,6 +17,9 @@ final class View
     private Session $session;
     private Csrf $csrf;
 
+    /** @var array<int, array{type: string, message: string}>|null */
+    private ?array $flashCache = null;
+
     public function __construct(
         string $viewsDir,
         I18n $i18n,
@@ -47,6 +50,21 @@ final class View
     }
 
     /**
+     * Flash messages are consumed once per request. Content partial and layout both need them,
+     * so cache after the first read (otherwise the content render swallows them before the layout).
+     *
+     * @return array<int, array{type: string, message: string}>
+     */
+    private function flashes(): array
+    {
+        if ($this->flashCache === null) {
+            $this->flashCache = $this->session->getFlashes();
+        }
+
+        return $this->flashCache;
+    }
+
+    /**
      * @param array<string, mixed> $data
      */
     public function renderPartial(string $template, array $data = []): string
@@ -74,7 +92,7 @@ final class View
 
         $locale = $this->i18n->locale();
         $supportedLocales = $this->i18n->supportedLocales();
-        $flashes = $this->session->getFlashes();
+        $flashes = $this->flashes();
         $currentPath = $this->request->path();
 
         extract($data, EXTR_SKIP);
