@@ -96,7 +96,7 @@ a:hover {
     height: 46px;
     flex-shrink: 0;
     display: block;
-    filter: drop-shadow(0 4px 10px rgba(20, 51, 43, 0.2));
+    filter: drop-shadow(0 3px 6px rgba(20, 51, 43, 0.18));
     transition: transform 0.16s ease, filter 0.16s ease;
 }
 
@@ -113,16 +113,16 @@ a:hover {
 }
 
 .brand-name {
-    font-weight: 800;
+    font-weight: 700;
     font-size: 1.34rem;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
     color: var(--pine-950);
 }
 
 .brand-sub {
     font-weight: 700;
-    font-size: 0.72rem;
-    letter-spacing: 0.11em;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--gold-600);
 }
@@ -482,6 +482,21 @@ a:hover {
     margin: 0 0 10px;
     font-size: clamp(1.5rem, 2.5vw, 2.05rem);
     line-height: 1.2;
+}
+
+/* Wide header: title stays on one line on desktop, wraps balanced on small screens */
+.section-header--wide {
+    max-width: none;
+}
+
+.section-header--wide h2 {
+    text-wrap: balance;
+}
+
+@media (min-width: 1100px) {
+    .section-header--wide h2 {
+        white-space: nowrap;
+    }
 }
 
 .grid-3 {
@@ -864,4 +879,261 @@ section[id] {
 }
 .feature-card:hover {
     border-color: var(--gold-500, #c88a2e);
+}
+
+/* ==================================================================
+   Landing: share card (icons, socials) and animated browser mockup
+================================================================== */
+.share-column {
+    display: grid;
+    gap: 22px;
+}
+
+.share-card {
+    background: var(--cream-100);
+}
+
+.share-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    display: block;
+    opacity: 0.88;
+}
+
+.btn-outline .btn-icon {
+    color: var(--gold-600);
+    opacity: 1;
+}
+
+/* Social share: a roomy full-width toggle with a disclosure list */
+.share-socials {
+    margin-top: 14px;
+}
+
+.share-socials-toggle {
+    width: 100%;
+    padding: 12px 18px;
+    list-style: none;
+    user-select: none;
+}
+
+.share-socials-toggle::-webkit-details-marker {
+    display: none;
+}
+
+.share-socials-toggle::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    margin-left: 4px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.18s ease;
+}
+
+.share-socials[open] .share-socials-toggle::after {
+    transform: translateY(1px) rotate(-135deg);
+}
+
+.share-socials-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.share-social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--pine-900);
+    font-weight: 700;
+    font-size: 0.84rem;
+    text-decoration: none;
+    transition: background-color 0.15s ease, transform 0.12s ease;
+}
+
+.share-social:hover {
+    background: var(--cream-50);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.share-social svg {
+    width: 16px;
+    height: 16px;
+    color: var(--gold-600);
+}
+
+/* Browser mockup (see browser-mockup skill): frame in HTML, screen in SVG */
+.mock-figure {
+    margin: 0;
+}
+
+.mock {
+    --mock-bg: #ffffff;
+    --mock-bar: #ece7dc;
+    --mock-panel: var(--cream-50);
+    --mock-alt: var(--cream-100);
+    --mock-line: var(--border);
+    --mock-ink: var(--pine-950);
+    --mock-muted: var(--ink-400);
+    --mock-side: var(--pine-900);
+    --mock-side-ink: #ffffff;
+    --mock-accent: var(--pine-900);
+    --mock-gold: var(--gold-500);
+    --mock-ok: #2f8a5b;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--mock-bg);
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(20, 51, 43, 0.05), 0 18px 36px -22px rgba(20, 51, 43, 0.45);
+}
+
+.mock__bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--mock-bar);
+    border-bottom: 1px solid var(--border);
+}
+
+.mock .dots {
+    display: flex;
+    gap: 6px;
+}
+
+.mock .dots i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #cfc6b4;
+    display: block;
+}
+
+.mock__url {
+    flex: 1;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--ink-400);
+    background: var(--mock-bg);
+    border-radius: 5px;
+    padding: 3px 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mock__screen > svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.mock-caption {
+    margin: 10px 2px 0;
+    font-size: 0.84rem;
+    color: var(--ink-400);
+    text-align: center;
+}
+
+/* JS adds .is-armed before observing; without JS the static end state stays visible */
+.anim.is-armed [data-anim] { opacity: 0; }
+.anim.is-playing [data-anim] {
+    animation: mkRise 0.55s cubic-bezier(.2, .7, .3, 1) both;
+    animation-delay: var(--d, 0s);
+}
+.mock svg [data-anim],
+.mock svg .mk-new,
+.mock svg .mk-toast {
+    transform-box: fill-box;
+    transform-origin: center;
+}
+@keyframes mkRise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Cursor: move, press, ripple. All loops share one 6s duration. */
+.mock .ptr { fill: var(--mock-ink); stroke: #fff; stroke-width: 1; stroke-linejoin: round; }
+.mock .rip { fill: var(--mock-gold); opacity: 0; transform-box: fill-box; transform-origin: center; }
+.mock .cur { opacity: 0; }
+.mock .press { transform-origin: 0 0; }
+.mock .mk-new, .mock .mk-toast { opacity: 0; }
+
+.anim.is-playing .cur      { animation: mkCurMove 6s ease-in-out 0.6s infinite both; }
+.anim.is-playing .press    { animation: mkCurPress 6s linear 0.6s infinite both; }
+.anim.is-playing .rip      { animation: mkCurRipple 6s linear 0.6s infinite both; }
+.anim.is-playing .mk-new   { animation: mkNew 6s cubic-bezier(.2, .7, .3, 1) 0.6s infinite both; }
+.anim.is-playing .mk-toast { animation: mkToast 6s ease-out 0.6s infinite both; }
+
+@keyframes mkCurMove {
+    0%       { opacity: 0; transform: translate(380px, 196px); }
+    6%       { opacity: 1; transform: translate(370px, 180px); }
+    22%      { transform: translate(360px, 27px); }
+    40%      { transform: translate(360px, 27px); }
+    52%      { transform: translate(298px, 27px); }
+    90%      { opacity: 1; transform: translate(298px, 27px); }
+    100%     { opacity: 0; transform: translate(320px, 80px); }
+}
+@keyframes mkCurPress {
+    0%, 22%  { transform: scale(1); }
+    25%      { transform: scale(.82); }
+    29%, 52% { transform: scale(1); }
+    55%      { transform: scale(.82); }
+    59%,100% { transform: scale(1); }
+}
+@keyframes mkCurRipple {
+    0%, 23%  { opacity: 0; transform: scale(.2); }
+    26%      { opacity: .45; transform: scale(.5); }
+    36%, 53% { opacity: 0; transform: scale(1.5); }
+    56%      { opacity: .45; transform: scale(.5); }
+    66%,100% { opacity: 0; transform: scale(1.5); }
+}
+/* Effect after cause: click at 25% -> row at 28%; click at 55% -> toast at 58% */
+@keyframes mkNew {
+    0%, 27%  { opacity: 0; transform: translateY(8px); }
+    33%, 92% { opacity: 1; transform: translateY(0); }
+    99%,100% { opacity: 0; transform: translateY(0); }
+}
+@keyframes mkToast {
+    0%, 57%  { opacity: 0; transform: translateY(-4px); }
+    62%, 86% { opacity: 1; transform: translateY(0); }
+    92%,100% { opacity: 0; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .anim [data-anim],
+    .anim.is-playing [data-anim] {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+    }
+    .anim.is-playing .cur,
+    .anim.is-playing .press,
+    .anim.is-playing .rip,
+    .anim.is-playing .mk-new,
+    .anim.is-playing .mk-toast { animation: none !important; }
+    .mock .cur { display: none; }
+    .mock .mk-new { opacity: 1; }
+}
+
+@media (max-width: 560px) {
+    .share-socials-list { grid-template-columns: 1fr; }
 }

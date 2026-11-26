@@ -88,6 +88,10 @@ return [
     'landing.share_whatsapp_text' => 'Bon plan pour les fêtes : avec XOrder by AssurIO, les traiteurs et bouchers gèrent leurs commandes gratuitement avec backup Excel en 1 clic :',
     'landing.share_email' => 'Envoyer par e-mail',
     'landing.share_email_subject' => 'Astuce : outil gratuit pour vos commandes de fêtes (avec backup Excel)',
+    'landing.share_socials' => 'Partager sur les réseaux sociaux',
+    'landing.share_on' => 'Partager sur {network}',
+    'landing.mock_alt' => 'Aperçu de XOrder : une nouvelle commande de fêtes apparaît dans la liste et le backup Excel se fait en un clic.',
+    'landing.mock_caption' => 'En pratique : saisir la commande, la retrouver dans la liste, backup Excel en un clic.',
 
     // Landing - Inline registration
     'landing.reg_title' => 'Démarrer gratuitement pour les Fêtes 2026',

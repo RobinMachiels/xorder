@@ -88,6 +88,10 @@ return [
     'landing.share_whatsapp_text' => 'Tip voor de feestdagen: met XOrder by AssurIO beheer je als traiteur of slager al je feestbestellingen gratis en met 1-klik Excel-backup:',
     'landing.share_email' => 'Stuur via e-mail',
     'landing.share_email_subject' => 'Tip: gratis tool voor feestbestellingen (met Excel-backup)',
+    'landing.share_socials' => 'Deel op sociale media',
+    'landing.share_on' => 'Deel op {network}',
+    'landing.mock_alt' => 'Schermvoorbeeld van XOrder: een nieuwe feestbestelling verschijnt in de lijst en de Excel-backup wordt met één klik gemaakt.',
+    'landing.mock_caption' => 'Zo ziet het eruit: bestelling ingeven, meteen in de lijst, Excel-backup met één klik.',
 
     // Landing - Inline registration
     'landing.reg_title' => 'Start gratis voor Feestseizoen 2026',

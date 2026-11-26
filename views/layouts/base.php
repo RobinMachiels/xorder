@@ -32,43 +32,18 @@ declare(strict_types=1);
         <a href="<?= $e($url($user !== null ? '/app' : '/')) ?>" class="brand-mark">
             <svg class="brand-logo-svg" width="46" height="46" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
                 <defs>
-                    <linearGradient id="xo-hdr-pine" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#1f4d41"/>
-                        <stop offset="54%" stop-color="#14332b"/>
-                        <stop offset="100%" stop-color="#0a1c17"/>
-                    </linearGradient>
-                    <radialGradient id="xo-hdr-glow" cx="50%" cy="42%" r="52%">
-                        <stop offset="0%" stop-color="#e3ad4e" stop-opacity="0.18"/>
-                        <stop offset="100%" stop-color="#14332b" stop-opacity="0"/>
-                    </radialGradient>
-                    <linearGradient id="xo-hdr-gold" x1="13" y1="37" x2="35" y2="11" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#b4761e"/>
-                        <stop offset="48%" stop-color="#dfa13d"/>
-                        <stop offset="100%" stop-color="#f7d68a"/>
-                    </linearGradient>
-                    <linearGradient id="xo-hdr-rim" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#f5ce7c" stop-opacity="0.72"/>
-                        <stop offset="50%" stop-color="#c88a2e" stop-opacity="0.34"/>
-                        <stop offset="100%" stop-color="#f5ce7c" stop-opacity="0.58"/>
-                    </linearGradient>
-                    <linearGradient id="xo-hdr-ivory" x1="14" y1="16" x2="34" y2="37" gradientUnits="userSpaceOnUse">
-                        <stop offset="0%" stop-color="#ffffff"/>
-                        <stop offset="100%" stop-color="#e9e2d3"/>
-                    </linearGradient>
-                    <mask id="xo-hdr-weave" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="48">
-                        <rect width="48" height="48" fill="#ffffff"/>
-                        <path d="M 11.96 40.5 L 36.04 12.5" stroke="#000000" stroke-width="6.4" stroke-linecap="butt"/>
-                    </mask>
+                  <linearGradient id="xo-hdr-pine" x1="6" y1="6" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#1f4d41"/><stop offset=".55" stop-color="#14332b"/><stop offset="1" stop-color="#0c211b"/>
+                  </linearGradient>
+                  <linearGradient id="xo-hdr-gold" x1="13" y1="30" x2="25" y2="18" gradientUnits="userSpaceOnUse">
+                    <stop offset="0" stop-color="#b2771f"/><stop offset=".55" stop-color="#d9a046"/><stop offset="1" stop-color="#f2d38c"/>
+                  </linearGradient>
                 </defs>
-                <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#xo-hdr-pine)"/>
-                <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#xo-hdr-glow)"/>
-                <rect x="2.5" y="2.5" width="43" height="43" rx="11.5" fill="none" stroke="#091814" stroke-opacity="0.35"/>
-                <rect x="4.75" y="4.75" width="38.5" height="38.5" rx="9.25" fill="none" stroke="url(#xo-hdr-rim)" stroke-width="0.85"/>
-                <g mask="url(#xo-hdr-weave)">
-                    <path d="M13.4 16.5 H17.4 L34.6 36.5 H30.6 Z" fill="url(#xo-hdr-ivory)" stroke="url(#xo-hdr-ivory)" stroke-width="1.2" stroke-linejoin="round"/>
-                </g>
-                <path d="M13.4 36.5 H17.4 L34.6 16.5 H30.6 Z" fill="url(#xo-hdr-gold)" stroke="url(#xo-hdr-gold)" stroke-width="1.2" stroke-linejoin="round"/>
-                <path d="M24 8.0 Q24.34 10.86 27.2 11.2 Q24.34 11.54 24 14.4 Q23.66 11.54 20.8 11.2 Q23.66 10.86 24 8.0 Z" fill="#f8d88e"/>
+                <path d="M8 8 H40 a4 4 0 0 1 4 4 V20.5 a3.5 3.5 0 0 0 0 7 V36 a4 4 0 0 1 -4 4 H8 a4 4 0 0 1 -4 -4 V27.5 a3.5 3.5 0 0 0 0 -7 V12 a4 4 0 0 1 4 -4 Z" fill="url(#xo-hdr-pine)"/>
+                <path d="M33 12 V36" stroke="#f6efe1" stroke-opacity=".45" stroke-width="1.2" stroke-dasharray="1.6 2.2" stroke-linecap="round"/>
+                <path d="M24.4 18.4 L13.6 29.6" stroke="#f6efe1" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+                <path d="M13.6 18.4 L24.4 29.6" stroke="url(#xo-hdr-gold)" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+                <path d="M38.5 20.6 Q38.85 23.65 41.9 24 Q38.85 24.35 38.5 27.4 Q38.15 24.35 35.1 24 Q38.15 23.65 38.5 20.6 Z" fill="#e9be6c"/>
             </svg>
             <span class="brand-wordmark">
                 <span class="brand-name"><?= $e($t('brand.name')) ?></span>

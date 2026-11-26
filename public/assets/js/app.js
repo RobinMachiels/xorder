@@ -1,18 +1,22 @@
 (function () {
     'use strict';
 
-    // Share link copy on landing page
+    // Share link copy on landing page (swaps only the label, keeps the icon)
     document.querySelectorAll('[data-copy-url]').forEach(function (btn) {
+        var label = btn.querySelector('[data-copy-text]') || btn;
+        var originalText = label.textContent;
+        var copiedText = btn.getAttribute('data-copied-label') || 'Copied!';
+
+        function showCopied() {
+            label.textContent = copiedText;
+            setTimeout(function () { label.textContent = originalText; }, 2200);
+        }
+
         btn.addEventListener('click', function () {
             var url = btn.getAttribute('data-copy-url') || window.location.href;
-            var copiedText = btn.getAttribute('data-copied-label') || 'Copied!';
-            var originalText = btn.textContent;
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(url).then(function () {
-                    btn.textContent = copiedText;
-                    setTimeout(function () { btn.textContent = originalText; }, 2200);
-                });
+                navigator.clipboard.writeText(url).then(showCopied);
             } else {
                 var tmp = document.createElement('input');
                 tmp.value = url;
@@ -20,11 +24,50 @@
                 tmp.select();
                 document.execCommand('copy');
                 document.body.removeChild(tmp);
-                btn.textContent = copiedText;
-                setTimeout(function () { btn.textContent = originalText; }, 2200);
+                showCopied();
             }
         });
     });
+
+    // Social share: native share sheet on touch devices, otherwise the link list
+    var touchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    document.querySelectorAll('[data-native-share]').forEach(function (box) {
+        var toggle = box.querySelector('summary');
+        if (!toggle || !navigator.share || !touchDevice) return;
+
+        toggle.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            navigator.share({
+                title: box.getAttribute('data-share-title') || document.title,
+                text: box.getAttribute('data-share-text') || '',
+                url: box.getAttribute('data-share-url') || window.location.href
+            }).catch(function (err) {
+                // User cancelled: do nothing. Anything else: fall back to the list.
+                if (!err || err.name !== 'AbortError') box.open = true;
+            });
+        });
+    });
+
+    // Animated browser mockups: play once when scrolled into view
+    var mocks = document.querySelectorAll('[data-observe]');
+    if (mocks.length) {
+        if ('IntersectionObserver' in window) {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-playing');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.35 });
+            mocks.forEach(function (el) {
+                el.classList.add('is-armed');
+                io.observe(el);
+            });
+        } else {
+            mocks.forEach(function (el) { el.classList.add('is-playing'); });
+        }
+    }
 
     // Print buttons and auto-submit selects (no inline handlers: CSP blocks them)
     document.querySelectorAll('[data-print]').forEach(function (btn) {
