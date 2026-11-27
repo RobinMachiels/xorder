@@ -18,7 +18,7 @@ declare(strict_types=1);
         <?php else: ?>
             <div class="feature-grid">
                 <?php foreach ($names as $name): ?>
-                    <a class="card feature-card" href="<?= $e($url('/features/' . $name)) ?>">
+                    <a class="card feature-card" href="<?= $e($url('/features', ['name' => $name])) ?>">
                         <strong><?= $e(ucfirst($name)) ?></strong>
                         <span>/features/<?= $e($name) ?></span>
                     </a>

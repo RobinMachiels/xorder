@@ -34,12 +34,15 @@ abstract class BaseController
         return $user;
     }
 
-    protected function verifyCsrf(Request $request, string $fallbackPath): ?Response
+    /**
+     * @param array<string, scalar|null> $fallbackQuery
+     */
+    protected function verifyCsrf(Request $request, string $fallbackPath, array $fallbackQuery = []): ?Response
     {
         $token = $request->post('_csrf');
         if (!$this->app->csrf->verify(is_string($token) ? $token : null)) {
             $this->app->session->flash('error', $this->app->i18n->t('error.csrf'));
-            return Response::redirect($request->url($fallbackPath));
+            return Response::redirect($request->url($fallbackPath, $fallbackQuery));
         }
 
         return null;

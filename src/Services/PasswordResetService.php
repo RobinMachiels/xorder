@@ -53,7 +53,7 @@ final class PasswordResetService
             ]
         );
 
-        $link = rtrim($baseUrlForLink, '/') . '/' . $token;
+        $link = $baseUrlForLink . (str_contains($baseUrlForLink, '?') ? '&' : '?') . 'token=' . $token;
         $this->sendMail($user->email, $link);
 
         return $this->config->isDebug() ? $link : null;

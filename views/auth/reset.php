@@ -22,7 +22,7 @@ declare(strict_types=1);
             </div>
             <h1 style="margin:0 0 18px;font-size:1.55rem;"><?= $e($t('auth.reset_title')) ?></h1>
 
-            <form method="post" action="<?= $e($url('/reset/' . $token)) ?>">
+            <form method="post" action="<?= $e($url('/reset', ['token' => $token])) ?>">
                 <?= $csrfField() ?>
                 <div class="form-group">
                     <label class="form-label" for="reset-pw"><?= $e($t('auth.password')) ?> <small style="font-weight:500;color:var(--ink-400);">(<?= $e($t('auth.password_hint')) ?>)</small></label>

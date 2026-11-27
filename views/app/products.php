@@ -63,7 +63,7 @@ declare(strict_types=1);
                     <?php foreach ($products as $prod): ?>
                         <tr>
                             <td colspan="6" style="padding:8px 12px;">
-                                <form method="post" action="<?= $e($url('/app/products/' . $prod->id . '/update')) ?>" class="product-edit-form">
+                                <form method="post" action="<?= $e($url('/app/product-update', ['id' => $prod->id])) ?>" class="product-edit-form">
                                     <?= $csrfField() ?>
                                     <input class="form-control" type="text" name="name" value="<?= $e($prod->name) ?>" required>
                                     <input class="form-control" type="text" name="category" value="<?= $e($prod->category) ?>">
@@ -77,7 +77,7 @@ declare(strict_types=1);
                                         <button type="submit" class="btn btn-outline btn-sm"><?= $e($t('products.save_btn')) ?></button>
                                         <button
                                             type="submit"
-                                            formaction="<?= $e($url('/app/products/' . $prod->id . '/delete')) ?>"
+                                            formaction="<?= $e($url('/app/product-delete', ['id' => $prod->id])) ?>"
                                             class="btn btn-danger btn-sm"
                                             data-confirm="<?= $e($t('products.confirm_delete')) ?>"
                                         ><?= $e($t('products.delete_btn')) ?></button>

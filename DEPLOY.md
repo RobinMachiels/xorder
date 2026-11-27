@@ -25,14 +25,16 @@ bash bin/deploy-assurio.sh             # echt deployen (vraagt bevestiging)
 Wordt nooit overschreven: `config/config.php`, `storage/`, `xorder-path.php`.
 Gaat nooit mee: `features/`, `public/features/`, `.git`, `mcp-crashcourse/`.
 
+Geen `.htaccess` nodig: elke pagina is een gewoon `.php`-bestand in de webroot. Beveiligingsheaders (CSP, X-Frame-Options, ...) zet PHP zelf.
+
 ## Rooktest na deploy
 
 - [ ] `https://assurio.be/xorder/` laadt in NL, `?lang=fr` in FR
 - [ ] Registreren met testaccount, voorbeelddata verschijnt, dashboard laadt
 - [ ] Bestelling aanmaken, keukenlijst klopt, printknop werkt
 - [ ] Excel-backup downloaden en openen (4 tabbladen)
-- [ ] Wachtwoord vergeten: mail komt aan, link begint met `https://assurio.be/xorder/reset/`
-- [ ] `/xorder/features` geeft 404 (features staan uit op productie)
+- [ ] Wachtwoord vergeten: mail komt aan, link begint met `https://assurio.be/xorder/reset.php?token=`
+- [ ] `/xorder/features.php` geeft 404 (features staan uit op productie)
 - [ ] `/xorder/widget/assurio-xorder-widget.js` is bereikbaar
 - [ ] Browserconsole: geen CSP-fouten
 - [ ] Testaccount verwijderen

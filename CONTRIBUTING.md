@@ -7,11 +7,11 @@ Iedereen bouwt een eigen feature. Om merge-conflicten te vermijden raakt niemand
 | Mag | Mag niet |
 | --- | --- |
 | `features/<voornaam>.php` | alles in `src/`, `views/`, `lang/`, `config/`, `database/` |
-| `public/features/<voornaam>/` (css, js, afbeeldingen) | `public/index.php`, `public/assets/`, `.htaccess` |
+| `public/features/<voornaam>/` (css, js, afbeeldingen) | de `.php`-bestanden in `public/` en `public/app/`, `public/assets/` |
 | | `README.md`, `.github/`, bestanden van een andere cursist |
 
 `<voornaam>` is in kleine letters, zonder spaties of accenten (bv. `jan`, `anne-sophie`).
-Je pagina verschijnt vanzelf op `/features/<voornaam>` en in het menu **Features**. Je hoeft geen route of menu toe te voegen.
+Je pagina verschijnt vanzelf op `/features.php?name=<voornaam>` en in het menu **Features**. Je hoeft geen route of menu toe te voegen.
 
 Een automatische controle (GitHub Actions) keurt je pull request af als je een ander bestand aanraakt.
 

@@ -89,7 +89,7 @@ final class OrderController extends BaseController
             return $user;
         }
 
-        if (($csrfError = $this->verifyCsrf($request, '/app/orders/new')) !== null) {
+        if (($csrfError = $this->verifyCsrf($request, '/app/order-new')) !== null) {
             return $csrfError;
         }
 
@@ -98,12 +98,12 @@ final class OrderController extends BaseController
 
         if ($payload['customer_name'] === '' || $payload['pickup_date'] === '') {
             $this->app->session->flash('error', $this->app->i18n->t('error.required_fields'));
-            return Response::redirect($request->url('/app/orders/new'));
+            return Response::redirect($request->url('/app/order-new'));
         }
 
         if ($items === []) {
             $this->app->session->flash('error', $this->app->i18n->t('orders.empty_items_error'));
-            return Response::redirect($request->url('/app/orders/new'));
+            return Response::redirect($request->url('/app/order-new'));
         }
 
         $orderId = $this->orders->createWithItems($user->id, $payload, $items);
@@ -154,9 +154,10 @@ final class OrderController extends BaseController
         }
 
         $orderId = (int) ($params['id'] ?? 0);
-        $editPath = '/app/orders/' . $orderId . '/edit';
+        $editPath = '/app/order-edit';
+        $editQuery = ['id' => $orderId];
 
-        if (($csrfError = $this->verifyCsrf($request, $editPath)) !== null) {
+        if (($csrfError = $this->verifyCsrf($request, $editPath, $editQuery)) !== null) {
             return $csrfError;
         }
 
@@ -171,12 +172,12 @@ final class OrderController extends BaseController
 
         if ($payload['customer_name'] === '' || $payload['pickup_date'] === '') {
             $this->app->session->flash('error', $this->app->i18n->t('error.required_fields'));
-            return Response::redirect($request->url($editPath));
+            return Response::redirect($request->url($editPath, $editQuery));
         }
 
         if ($items === []) {
             $this->app->session->flash('error', $this->app->i18n->t('orders.empty_items_error'));
-            return Response::redirect($request->url($editPath));
+            return Response::redirect($request->url($editPath, $editQuery));
         }
 
         $this->orders->updateWithItems($orderId, $user->id, $payload, $items);

@@ -89,9 +89,10 @@ final class PasswordController extends BaseController
     public function reset(Request $request, array $params): Response
     {
         $token = (string) ($params['token'] ?? '');
-        $path = '/reset/' . $token;
+        $path = '/reset';
+        $query = ['token' => $token];
 
-        if (($csrfError = $this->verifyCsrf($request, $path)) !== null) {
+        if (($csrfError = $this->verifyCsrf($request, $path, $query)) !== null) {
             return $csrfError;
         }
 
@@ -100,12 +101,12 @@ final class PasswordController extends BaseController
 
         if (strlen($password) < 6) {
             $this->app->session->flash('error', $this->app->i18n->t('error.password_short'));
-            return Response::redirect($request->url($path));
+            return Response::redirect($request->url($path, $query));
         }
 
         if ($password !== $confirm) {
             $this->app->session->flash('error', $this->app->i18n->t('auth.password_mismatch'));
-            return Response::redirect($request->url($path));
+            return Response::redirect($request->url($path, $query));
         }
 
         if (!$this->resets->reset($token, $password)) {
