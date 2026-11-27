@@ -142,6 +142,22 @@ if (!isset($wesley1Sjabloon)) {
                 return mb_substr(trim((string) $request->post($veld, '')), 0, $max);
             };
 
+            // Prijs uit het formulier: "12,50" of "12.50", een geldig getal van 0 of meer. Anders null.
+            $prijsUitFormulier = static function () use ($request): ?float {
+                $invoer = str_replace(',', '.', trim((string) $request->post('prijs', '')));
+                if ($invoer === '' || !is_numeric($invoer) || (float) $invoer < 0 || (float) $invoer > 99999) {
+                    return null;
+                }
+
+                return round((float) $invoer, 2);
+            };
+            // Id van een item of product uit het formulier (enkel cijfers), anders 0
+            $idUitFormulier = static function (string $veld) use ($request): int {
+                $waarde = (string) $request->post($veld, '');
+
+                return ctype_digit($waarde) ? (int) $waarde : 0;
+            };
+
             $actie = (string) $request->post('actie', '');
 
             if ($actie === 'instellingen') {
@@ -184,6 +200,66 @@ if (!isset($wesley1Sjabloon)) {
                 $terug('success', $toegevoegd === 1
                     ? '1 product van je assortiment op de kaart gezet.'
                     : $toegevoegd . ' producten van je assortiment op de kaart gezet.');
+            }
+
+            if ($actie === 'toevoegen_product') {
+                // Het product moet echt van deze handelaar zijn (en actief)
+                $product = $app->db->fetchOne(
+                    'SELECT id, name, category, unit, price FROM products WHERE id = ? AND user_id = ? AND is_active = 1',
+                    [$idUitFormulier('product_id'), $user->id]
+                );
+                if ($product === null) {
+                    $terug('error', 'Kies een product uit je assortiment.');
+                }
+                if (in_array((int) $product['id'], $productIdsOpKaart(), true)) {
+                    $terug('error', 'Dit product staat al op de kaart.');
+                }
+                $zetOpKaart($product);
+                $terug('success', 'Product op de kaart gezet.');
+            }
+
+            if ($actie === 'toevoegen_eigen' || $actie === 'aanpassen') {
+                $naam = $tekst('naam', 160);
+                $omschrijving = $tekst('omschrijving', 300);
+                $prijsWaarde = $prijsUitFormulier();
+                if ($naam === '') {
+                    $terug('error', 'Geef een naam op.');
+                }
+                if ($prijsWaarde === null) {
+                    $terug('error', 'Geef een geldige prijs op (0 of meer, bv. 12,50).');
+                }
+
+                if ($actie === 'toevoegen_eigen') {
+                    // Eigen gerecht: product_id blijft leeg
+                    $app->db->execute(
+                        'INSERT INTO wesley1_menu_items (user_id, product_id, naam, omschrijving, prijs, volgorde, created_at)
+                         VALUES (?, NULL, ?, ?, ?, ?, ?)',
+                        [$user->id, $naam, $omschrijving, $prijsWaarde, $volgendeVolgorde(), date('Y-m-d H:i:s')]
+                    );
+                    $terug('success', 'Eigen gerecht op de kaart gezet.');
+                }
+
+                // Aanpassen: enkel in wesley1_menu_items en enkel een item van deze handelaar
+                $aangepast = $app->db->execute(
+                    'UPDATE wesley1_menu_items SET naam = ?, omschrijving = ?, prijs = ? WHERE id = ? AND user_id = ?',
+                    [$naam, $omschrijving, $prijsWaarde, $idUitFormulier('item_id'), $user->id]
+                );
+                if ($aangepast === 0) {
+                    $terug('error', 'Dit item staat niet op je kaart.');
+                }
+                $terug('success', 'Item aangepast.');
+            }
+
+            if ($actie === 'verwijderen') {
+                // Enkel van de kaart (wesley1_menu_items), nooit uit het assortiment
+                $verwijderd = $app->db->execute(
+                    'DELETE FROM wesley1_menu_items WHERE id = ? AND user_id = ?',
+                    [$idUitFormulier('item_id'), $user->id]
+                );
+                if ($verwijderd === 0) {
+                    $terug('error', 'Dit item staat niet op je kaart.');
+                }
+                $terug('success', 'Item van de kaart verwijderd.');
             }
 
             $terug('error', 'Onbekende actie.');
@@ -310,6 +386,39 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
         <button type="submit" class="btn btn-primary"><?= $e('Bewaar') ?></button>
     </form>
 
+    <div class="wesley1-toevoegen">
+        <?php if ($nietOpKaart !== []): ?>
+            <form method="post" action="<?= $e($paginaUrl) ?>" class="card wesley1-blok">
+                <?= $csrfField() ?>
+                <input type="hidden" name="actie" value="toevoegen_product">
+                <h2><?= $e('Product uit assortiment toevoegen') ?></h2>
+                <label class="form-label" for="wesley1-product"><?= $e('Product') ?></label>
+                <select id="wesley1-product" class="form-control" name="product_id" required>
+                    <option value=""><?= $e('Kies een product') ?></option>
+                    <?php foreach ($nietOpKaart as $product): ?>
+                        <option value="<?= $e($product['id']) ?>">
+                            <?= $e($product['name'] . ' (' . $prijs($product['price']) . ')') ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" class="btn btn-primary"><?= $e('Toevoegen') ?></button>
+            </form>
+        <?php endif; ?>
+
+        <form method="post" action="<?= $e($paginaUrl) ?>" class="card wesley1-blok">
+            <?= $csrfField() ?>
+            <input type="hidden" name="actie" value="toevoegen_eigen">
+            <h2><?= $e('Eigen gerecht toevoegen') ?></h2>
+            <label class="form-label" for="wesley1-eigen-naam"><?= $e('Naam') ?></label>
+            <input id="wesley1-eigen-naam" class="form-control" type="text" name="naam" maxlength="160" required>
+            <label class="form-label" for="wesley1-eigen-omschrijving"><?= $e('Omschrijving') ?></label>
+            <input id="wesley1-eigen-omschrijving" class="form-control" type="text" name="omschrijving" maxlength="300">
+            <label class="form-label" for="wesley1-eigen-prijs"><?= $e('Prijs (€)') ?></label>
+            <input id="wesley1-eigen-prijs" class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" value="0.00" required>
+            <button type="submit" class="btn btn-primary"><?= $e('Toevoegen') ?></button>
+        </form>
+    </div>
+
     <div class="card wesley1-blok wesley1-items">
         <h2><?= $e('Op de kaart') ?></h2>
         <?php if ($items === []): ?>
@@ -317,10 +426,37 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
         <?php else: ?>
             <ul class="wesley1-itemlijst">
                 <?php foreach ($items as $item): ?>
+                    <?php $itemId = (int) $item['id']; ?>
                     <li class="wesley1-item">
-                        <span class="wesley1-item-naam"><?= $e($item['naam']) ?></span>
-                        <span class="wesley1-item-omschrijving"><?= $e($item['omschrijving']) ?></span>
-                        <span class="wesley1-item-prijs"><?= $e($prijs($item['prijs'])) ?></span>
+                        <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-item-form">
+                            <?= $csrfField() ?>
+                            <input type="hidden" name="actie" value="aanpassen">
+                            <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
+                            <label class="wesley1-veld">
+                                <span><?= $e('Naam') ?></span>
+                                <input class="form-control" type="text" name="naam" maxlength="160" required value="<?= $e($item['naam']) ?>">
+                            </label>
+                            <label class="wesley1-veld wesley1-veld-breed">
+                                <span><?= $e('Omschrijving') ?></span>
+                                <input class="form-control" type="text" name="omschrijving" maxlength="300" value="<?= $e($item['omschrijving']) ?>">
+                            </label>
+                            <label class="wesley1-veld wesley1-veld-prijs">
+                                <span><?= $e('Prijs (€)') ?></span>
+                                <input class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" required
+                                       value="<?= $e(number_format((float) $item['prijs'], 2, '.', '')) ?>">
+                            </label>
+                            <button type="submit" class="btn btn-outline btn-sm"><?= $e('Bewaar') ?></button>
+                        </form>
+                        <div class="wesley1-item-acties">
+                            <span class="wesley1-item-bron"><?= $e($item['product_id'] !== null ? 'Uit assortiment' : 'Eigen gerecht') ?></span>
+                            <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-verwijder-form"
+                                  data-wesley1-bevestig="<?= $e('"' . $item['naam'] . '" van de kaart verwijderen? Je assortiment blijft ongewijzigd.') ?>">
+                                <?= $csrfField() ?>
+                                <input type="hidden" name="actie" value="verwijderen">
+                                <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
+                                <button type="submit" class="btn btn-outline btn-sm wesley1-verwijder"><?= $e('Verwijder') ?></button>
+                            </form>
+                        </div>
                     </li>
                 <?php endforeach; ?>
             </ul>
