@@ -52,6 +52,7 @@ declare(strict_types=1);
         </a>
 
         <nav class="main-nav">
+            <a href="lily.php">Lily</a>
             <?php if ($featureNames !== []): ?>
                 <a class="nav-link nav-link-features <?= str_starts_with($currentPath, '/features') ? 'is-active' : '' ?>" href="<?= $e($url('/features')) ?>">Features</a>
             <?php endif; ?>
