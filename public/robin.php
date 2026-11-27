@@ -211,17 +211,24 @@ $nextDate = ($currentIndex !== false && $currentIndex < count($availableDates) -
         </div>
 
         <div style="display: flex; gap: 8px; align-items: center;">
-
             <?php if ($prevDate !== null): ?>
                 <a href="<?= $e($url('/robin.php', ['date' => $prevDate])) ?>" class="btn btn-outline btn-sm" title="Ga naar <?= $e($prevDate) ?>">
                     &larr; Vorige dag
                 </a>
+            <?php else: ?>
+                <button type="button" class="btn btn-outline btn-sm" disabled style="opacity: 0.45; cursor: not-allowed;" title="Geen eerdere afhaaldag">
+                    &larr; Vorige dag
+                </button>
             <?php endif; ?>
 
             <?php if ($nextDate !== null): ?>
                 <a href="<?= $e($url('/robin.php', ['date' => $nextDate])) ?>" class="btn btn-outline btn-sm" title="Ga naar <?= $e($nextDate) ?>">
                     Volgende dag &rarr;
                 </a>
+            <?php else: ?>
+                <button type="button" class="btn btn-outline btn-sm" disabled style="opacity: 0.45; cursor: not-allowed;" title="Geen volgende afhaaldag">
+                    Volgende dag &rarr;
+                </button>
             <?php endif; ?>
         </div>
     </form>
