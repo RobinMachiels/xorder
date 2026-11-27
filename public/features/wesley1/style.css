@@ -1,0 +1,10 @@
+/* Stijlen voor de feature van wesley1 (feestelijke menukaart). Elke klasse begint met .wesley1- */
+
+.wesley1-kop {
+    margin-bottom: 24px;
+}
+
+.wesley1-kop p {
+    color: var(--ink-600);
+    margin: 0;
+}
