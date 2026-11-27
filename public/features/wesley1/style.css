@@ -431,7 +431,7 @@
 .wesley1-bewerk-knoppen {
     grid-column: 1 / -1;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 8px;
 }
 
@@ -795,10 +795,14 @@
     }
 }
 
-/* Knoppen in formulieren en panelen: eigen breedte, niet uitgerekt */
-.wesley1-velden > .wesley1-knop,
+/* Knoppen in formulieren: eigen breedte, niet uitgerekt, in het midden */
+.wesley1-velden > .wesley1-knop {
+    justify-self: center;
+}
+
+/* Knop in de kop van een paneel: rechts */
 .wesley1-paneel-kop .wesley1-knop {
-    justify-self: start;
+    justify-self: end;
 }
 
 .wesley1-bewerk-knoppen .wesley1-knop {
