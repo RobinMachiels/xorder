@@ -211,7 +211,6 @@ $nextDate = ($currentIndex !== false && $currentIndex < count($availableDates) -
         </div>
 
         <div style="display: flex; gap: 8px; align-items: center;">
-            <button type="submit" class="btn btn-primary btn-sm">Ophalen</button>
 
             <?php if ($prevDate !== null): ?>
                 <a href="<?= $e($url('/robin.php', ['date' => $prevDate])) ?>" class="btn btn-outline btn-sm" title="Ga naar <?= $e($prevDate) ?>">
