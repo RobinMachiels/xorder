@@ -299,15 +299,12 @@
     min-width: 0;
 }
 
-/* Volledige naam tonen, hoogstens twee regels */
+/* Naam altijd op één regel; te lang wordt afgekort met "…" (volledige naam bij muisaanwijzer) */
 .wesley1-rij-naam {
     font-weight: 600;
-    line-height: 1.3;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .wesley1-rij-omschrijving {
@@ -595,7 +592,12 @@
     gap: 8px;
 }
 
+/* Naam van het gerecht: altijd op één regel; te lang wordt afgekort met "…" */
 .wesley1-kaart-naam {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 1.12rem;
     font-weight: 700;
     color: var(--wesley1-inkt);
@@ -611,6 +613,7 @@
     font-weight: 700;
     color: var(--wesley1-rood);
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .wesley1-kaart-omschrijving {

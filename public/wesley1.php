@@ -548,7 +548,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                                 <span class="wesley1-nummer"><?= $e($nummer) ?></span>
 
                                 <div class="wesley1-rij-tekst">
-                                    <span class="wesley1-rij-naam"><?= $e($item['naam']) ?></span>
+                                    <span class="wesley1-rij-naam" title="<?= $e($item['naam']) ?>"><?= $e($item['naam']) ?></span>
                                     <?php if ((string) $item['omschrijving'] !== ''): ?>
                                         <span class="wesley1-rij-omschrijving"><?= $e($item['omschrijving']) ?></span>
                                     <?php endif; ?>
@@ -646,7 +646,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                                     <?php foreach ($gangItems as $item): ?>
                                         <li class="wesley1-kaart-item">
                                             <div class="wesley1-kaart-regel">
-                                                <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
+                                                <span class="wesley1-kaart-naam" title="<?= $e($item['naam']) ?>"><?= $e($item['naam']) ?></span>
                                                 <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
                                                 <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
                                             </div>
