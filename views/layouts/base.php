@@ -55,16 +55,17 @@ declare(strict_types=1);
             <?php if ($featureNames !== []): ?>
                 <a class="nav-link nav-link-features <?= str_starts_with($currentPath, '/features') ? 'is-active' : '' ?>" href="<?= $e($url('/features')) ?>">Features</a>
             <?php endif; ?>
-            <a href="wesley1.php">wesley1</a>
+          
             <?php if ($user !== null): ?>
                 <a class="nav-link <?= $currentPath === '/app' ? 'is-active' : '' ?>" href="<?= $e($url('/app')) ?>"><?= $e($t('nav.dashboard')) ?></a>
                 <a class="nav-link <?= str_starts_with($currentPath, '/app/order') ? 'is-active' : '' ?>" href="<?= $e($url('/app/orders')) ?>"><?= $e($t('nav.orders')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/kitchen' ? 'is-active' : '' ?>" href="<?= $e($url('/app/kitchen')) ?>"><?= $e($t('nav.kitchen')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/products' ? 'is-active' : '' ?>" href="<?= $e($url('/app/products')) ?>"><?= $e($t('nav.products')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/settings' ? 'is-active' : '' ?>" href="<?= $e($url('/app/settings')) ?>"><?= $e($t('nav.settings')) ?></a>
-           <?php if ($featureNames !== []): ?>
-    <a class="nav-link" href="<?= $e($url('/jeroen.php')) ?>">Order Health Check</a>
-<?php endif; ?>
+                <a class="nav-link" href="<?= $e($url('/jeroen.php')) ?>">Order Health Check</a>
+                <a class="nav-link" href="<?= $e($url('/wesley1.php')) ?>">Wesley1</a>
+         
+        
  <?php else: ?>
                 <a class="nav-link" href="<?= $e($url('/#voordelen')) ?>"><?= $e($t('nav.features')) ?></a>
                 <a class="nav-link" href="<?= $e($url('/#excel-backup')) ?>"><?= $e($t('nav.excel')) ?></a>
