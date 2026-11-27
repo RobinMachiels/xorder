@@ -105,3 +105,31 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Volgorde: nummer en knoppen omhoog/omlaag */
+.wesley1-volgorde {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.wesley1-volgorde form {
+    margin: 0;
+}
+
+.wesley1-nummer {
+    min-width: 28px;
+    font-weight: 700;
+    color: var(--ink-600);
+}
+
+.wesley1-pijl {
+    min-width: 36px;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.wesley1-pijl:disabled {
+    opacity: 0.35;
+    cursor: default;
+}

@@ -250,6 +250,38 @@ if (!isset($wesley1Sjabloon)) {
                 $terug('success', 'Item aangepast.');
             }
 
+            if ($actie === 'omhoog' || $actie === 'omlaag') {
+                // Huidige volgorde van de kaart van deze handelaar
+                $ids = array_map(
+                    static fn (array $rij): int => (int) $rij['id'],
+                    $app->db->fetchAll(
+                        'SELECT id FROM wesley1_menu_items WHERE user_id = ? ORDER BY volgorde ASC, id ASC',
+                        [$user->id]
+                    )
+                );
+                $plaats = array_search($idUitFormulier('item_id'), $ids, true);
+                if ($plaats === false) {
+                    $terug('error', 'Dit item staat niet op je kaart.');
+                }
+
+                $buur = $actie === 'omhoog' ? $plaats - 1 : $plaats + 1;
+                if (!isset($ids[$buur])) {
+                    $terug('success', $actie === 'omhoog' ? 'Dit item staat al bovenaan.' : 'Dit item staat al onderaan.');
+                }
+
+                // Wisselen met de buur en alles opnieuw nummeren (1, 2, 3, ...)
+                [$ids[$plaats], $ids[$buur]] = [$ids[$buur], $ids[$plaats]];
+                $app->db->beginTransaction();
+                foreach ($ids as $index => $id) {
+                    $app->db->execute(
+                        'UPDATE wesley1_menu_items SET volgorde = ? WHERE id = ? AND user_id = ?',
+                        [$index + 1, $id, $user->id]
+                    );
+                }
+                $app->db->commit();
+                $terug('success', 'Volgorde aangepast.');
+            }
+
             if ($actie === 'verwijderen') {
                 // Enkel van de kaart (wesley1_menu_items), nooit uit het assortiment
                 $verwijderd = $app->db->execute(
@@ -425,9 +457,22 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
             <p><?= $e('Nog niets op de kaart.') ?></p>
         <?php else: ?>
             <ul class="wesley1-itemlijst">
-                <?php foreach ($items as $item): ?>
+                <?php foreach ($items as $positie => $item): ?>
                     <?php $itemId = (int) $item['id']; ?>
                     <li class="wesley1-item">
+                        <div class="wesley1-volgorde">
+                            <span class="wesley1-nummer"><?= $e($positie + 1) ?></span>
+                            <?php foreach (['omhoog' => ['↑', 'Omhoog', $positie === 0], 'omlaag' => ['↓', 'Omlaag', $positie === count($items) - 1]] as $richting => [$pijl, $label, $kanNiet]): ?>
+                                <form method="post" action="<?= $e($paginaUrl) ?>">
+                                    <?= $csrfField() ?>
+                                    <input type="hidden" name="actie" value="<?= $e($richting) ?>">
+                                    <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
+                                    <button type="submit" class="btn btn-outline btn-sm wesley1-pijl"
+                                            title="<?= $e($label) ?>" aria-label="<?= $e($label . ': ' . $item['naam']) ?>"
+                                            <?= $kanNiet ? 'disabled' : '' ?>><?= $e($pijl) ?></button>
+                                </form>
+                            <?php endforeach; ?>
+                        </div>
                         <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-item-form">
                             <?= $csrfField() ?>
                             <input type="hidden" name="actie" value="aanpassen">
