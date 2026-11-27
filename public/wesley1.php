@@ -509,4 +509,43 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
     </div>
 </div>
 
+<h2 class="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
+
+<article class="wesley1-kaart" aria-label="<?= $e('Menukaart') ?>">
+    <div class="wesley1-kaart-binnen">
+        <header class="wesley1-kaart-kop">
+            <p class="wesley1-kaart-ster" aria-hidden="true"><?= $e('✦ ✦ ✦') ?></p>
+            <h3 class="wesley1-kaart-titel"><?= $e($menu['titel']) ?></h3>
+            <?php if ($menu['ondertitel'] !== ''): ?>
+                <p class="wesley1-kaart-ondertitel"><?= $e($menu['ondertitel']) ?></p>
+            <?php endif; ?>
+            <div class="wesley1-kaart-sier" aria-hidden="true"></div>
+        </header>
+
+        <?php if ($items === []): ?>
+            <p class="wesley1-kaart-leeg"><?= $e('De kaart is nog leeg.') ?></p>
+        <?php else: ?>
+            <ul class="wesley1-kaart-lijst">
+                <?php foreach ($items as $item): ?>
+                    <li class="wesley1-kaart-item">
+                        <div class="wesley1-kaart-regel">
+                            <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
+                            <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
+                            <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
+                        </div>
+                        <?php if ((string) $item['omschrijving'] !== ''): ?>
+                            <p class="wesley1-kaart-omschrijving"><?= $e($item['omschrijving']) ?></p>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+
+        <footer class="wesley1-kaart-voet">
+            <div class="wesley1-kaart-sier" aria-hidden="true"></div>
+            <p><?= $e('Prettige feestdagen!') ?></p>
+        </footer>
+    </div>
+</article>
+
 <script src="<?= $e($asset('app.js')) ?>"></script>

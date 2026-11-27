@@ -133,3 +133,178 @@
     opacity: 0.35;
     cursor: default;
 }
+
+/* ---------- Voorbeeld van de kaart: feestelijke stijl ---------- */
+.wesley1-kaart {
+    --wesley1-rood: #8e1b22;
+    --wesley1-groen: #1f4a33;
+    --wesley1-goud: #b48a2c;
+    --wesley1-goud-licht: #e3c77a;
+    --wesley1-papier: #fdf7ea;
+    --wesley1-inkt: #2c2118;
+
+    max-width: 720px;
+    margin: 0 auto 40px;
+    padding: 14px;
+    background:
+        radial-gradient(circle at 0 0, var(--wesley1-rood) 0 22px, transparent 23px),
+        radial-gradient(circle at 100% 0, var(--wesley1-groen) 0 22px, transparent 23px),
+        radial-gradient(circle at 0 100%, var(--wesley1-groen) 0 22px, transparent 23px),
+        radial-gradient(circle at 100% 100%, var(--wesley1-rood) 0 22px, transparent 23px),
+        var(--wesley1-papier);
+    border: 3px solid var(--wesley1-goud);
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(60, 30, 10, 0.18);
+    color: var(--wesley1-inkt);
+    font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+}
+
+.wesley1-kaart-binnen {
+    padding: 36px 44px 28px;
+    border: 1px solid var(--wesley1-goud-licht);
+    outline: 1px solid var(--wesley1-goud);
+    outline-offset: -7px;
+    background: var(--wesley1-papier);
+}
+
+.wesley1-kaart-kop {
+    text-align: center;
+    margin-bottom: 26px;
+}
+
+.wesley1-kaart-ster {
+    margin: 0 0 6px;
+    color: var(--wesley1-goud);
+    letter-spacing: 0.6em;
+    font-size: 0.9rem;
+}
+
+.wesley1-kaart-titel {
+    margin: 0;
+    color: var(--wesley1-rood);
+    font-family: inherit;
+    font-size: 2.4rem;
+    font-style: italic;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+}
+
+.wesley1-kaart-ondertitel {
+    margin: 8px 0 0;
+    color: var(--wesley1-groen);
+    font-size: 1.05rem;
+    font-variant: small-caps;
+    letter-spacing: 0.12em;
+}
+
+/* Gouden sierlijn met een ruit in het midden */
+.wesley1-kaart-sier {
+    position: relative;
+    height: 14px;
+    margin: 18px auto 0;
+    max-width: 320px;
+}
+
+.wesley1-kaart-sier::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    border-top: 1px solid var(--wesley1-goud);
+}
+
+.wesley1-kaart-sier::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    background: var(--wesley1-rood);
+    border: 2px solid var(--wesley1-goud);
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.wesley1-kaart-lijst {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+}
+
+.wesley1-kaart-item {
+    break-inside: avoid;
+}
+
+/* Naam ....... prijs */
+.wesley1-kaart-regel {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.wesley1-kaart-naam {
+    font-size: 1.12rem;
+    font-weight: 700;
+    color: var(--wesley1-inkt);
+}
+
+.wesley1-kaart-stippen {
+    flex: 1;
+    min-width: 24px;
+    border-bottom: 2px dotted var(--wesley1-goud);
+    transform: translateY(-4px);
+}
+
+.wesley1-kaart-prijs {
+    font-weight: 700;
+    color: var(--wesley1-rood);
+    white-space: nowrap;
+}
+
+.wesley1-kaart-omschrijving {
+    margin: 3px 0 0;
+    color: var(--wesley1-groen);
+    font-style: italic;
+    font-size: 0.95rem;
+}
+
+.wesley1-kaart-leeg {
+    text-align: center;
+    font-style: italic;
+    color: var(--wesley1-groen);
+}
+
+.wesley1-kaart-voet {
+    margin-top: 26px;
+    text-align: center;
+}
+
+.wesley1-kaart-voet .wesley1-kaart-sier {
+    margin-top: 0;
+}
+
+.wesley1-kaart-voet p {
+    margin: 12px 0 0;
+    color: var(--wesley1-rood);
+    font-style: italic;
+    font-size: 1.1rem;
+}
+
+.wesley1-voorbeeld-titel {
+    margin: 0 0 16px;
+    font-size: 1.15rem;
+}
+
+@media (max-width: 600px) {
+    .wesley1-kaart-binnen {
+        padding: 28px 18px 22px;
+    }
+
+    .wesley1-kaart-titel {
+        font-size: 1.8rem;
+    }
+}
