@@ -441,7 +441,6 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
 ?>
 <?php
 // Kleine hulpjes voor het sjabloon
-$aantalItems = count($items);
 $aantalNieuw = count($nietOpKaart);
 $geenProducten = $producten === [];
 // Standaard tabblad bij "Toevoegen": uit assortiment als er nog producten over zijn, anders eigen gerecht
@@ -458,24 +457,14 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
             <h1><?= $e('Feestelijke menukaart') ?></h1>
             <p><?= $e('Stel een feestmenu samen op basis van je assortiment en druk het af voor je klanten.') ?></p>
         </div>
-        <div class="wesley1-kop-acties">
-            <div class="wesley1-cijfers">
-                <div class="wesley1-cijfer">
-                    <strong><?= $e($aantalItems) ?></strong>
-                    <span><?= $e($aantalItems === 1 ? 'item op de kaart' : 'items op de kaart') ?></span>
-                </div>
-                <div class="wesley1-cijfer">
-                    <strong><?= $e($aantalNieuw) ?></strong>
-                    <span><?= $e('nog niet op de kaart') ?></span>
-                </div>
-            </div>
-            <?php if ($items !== []): ?>
+        <?php if ($items !== []): ?>
+            <div class="wesley1-kop-acties">
                 <button type="button" class="btn btn-gold wesley1-knop" id="wesley1-afdrukken">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></svg>
                     <?= $e('Afdrukken') ?>
                 </button>
-            <?php endif; ?>
-        </div>
+            </div>
+        <?php endif; ?>
     </header>
 
     <div class="wesley1-werkblad">

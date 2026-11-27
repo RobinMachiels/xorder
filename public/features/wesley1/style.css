@@ -75,37 +75,11 @@
     color: rgba(255, 255, 255, 0.78);
 }
 
-/* Rechts in de kopbalk: cijfers boven, afdrukknop eronder, samen 240px breed (even breed als elke knop) */
+/* Rechts in de kopbalk: de afdrukknop, verticaal in het midden en rechts uitgelijnd */
 .wesley1-kop-acties {
-    display: grid;
-    gap: 10px;
-    width: 240px;
-}
-
-.wesley1-cijfers {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.wesley1-cijfer {
-    display: grid;
-    min-width: 0;
-    padding: 10px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: var(--radius-md, 12px);
-    background: rgba(255, 255, 255, 0.06);
-}
-
-.wesley1-cijfer strong {
-    font-size: 1.4rem;
-    line-height: 1.1;
-    color: #fff;
-}
-
-.wesley1-cijfer span {
-    font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: flex-end;
+    align-self: center;
 }
 
 /* ======================================================================
@@ -882,7 +856,7 @@
 }
 
 .wesley1-kaart-gang {
-    break-inside: avoid-page;
+    break-inside: auto;
 }
 
 .wesley1-kaart-gangtitel {
@@ -909,5 +883,79 @@
 @media print {
     .wesley1-kaart-gangtitel {
         font-size: 14pt;
+    }
+}
+
+@media print {
+    /* Geen stippellijn in de afdruk (PDF): de lege ruimte blijft, zodat de prijs rechts uitgelijnd staat */
+    .wesley1-kaart-stippen {
+        border-bottom: 0;
+    }
+}
+
+/* Een dunne gouden scheidingslijn onder elk gerecht, op het scherm en in de afdruk */
+.wesley1-kaart-item {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--wesley1-goud-licht);
+}
+
+.wesley1-kaart-lijst {
+    gap: 12px;
+}
+
+/* Een gangtitel blijft altijd bij zijn eerste gerecht (nooit alleen onderaan een pagina) */
+.wesley1-kaart-gangtitel {
+    break-after: avoid;
+    page-break-after: avoid;
+}
+
+@media print {
+    .wesley1-kaart-item {
+        border-bottom-color: #d9bf72;
+    }
+}
+
+@media print {
+    /* Compacter op papier: meer gerechten per A4 */
+    .wesley1-kaart-binnen {
+        padding: 10mm 14mm 8mm;
+    }
+
+    .wesley1-kaart-kop {
+        margin-bottom: 14px;
+    }
+
+    .wesley1-kaart-titel {
+        font-size: 26pt;
+    }
+
+    .wesley1-kaart-lijst {
+        gap: 7px;
+    }
+
+    .wesley1-kaart-item {
+        padding-bottom: 7px;
+    }
+
+    .wesley1-kaart-naam {
+        font-size: 12pt;
+    }
+
+    .wesley1-kaart-omschrijving {
+        margin-top: 1px;
+        font-size: 10pt;
+    }
+
+    .wesley1-kaart-gang + .wesley1-kaart-gang {
+        margin-top: 16px;
+    }
+
+    .wesley1-kaart-gangtitel {
+        margin-bottom: 8px;
+        font-size: 13pt;
+    }
+
+    .wesley1-kaart-voet {
+        margin-top: 16px;
     }
 }
