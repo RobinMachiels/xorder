@@ -387,12 +387,12 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
 ?>
 <link rel="stylesheet" href="<?= $e($asset('style.css')) ?>">
 
-<div class="wesley1-kop">
+<div class="wesley1-kop no-print">
     <h1><?= $e('Feestelijke menukaart') ?></h1>
     <p><?= $e('Stel een feestmenu samen op basis van je assortiment en druk het af voor je klanten.') ?></p>
 </div>
 
-<div class="wesley1-beheer">
+<div class="wesley1-beheer no-print">
     <?php if ($nietOpKaart !== []): ?>
         <form method="post" action="<?= $e($paginaUrl) ?>" class="card wesley1-blok wesley1-overnemen">
             <?= $csrfField() ?>
@@ -509,7 +509,10 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
     </div>
 </div>
 
-<h2 class="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
+<div class="wesley1-voorbeeld-balk no-print">
+    <h2 class="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
+    <button type="button" class="btn btn-gold" id="wesley1-afdrukken"><?= $e('Afdrukken') ?></button>
+</div>
 
 <article class="wesley1-kaart" aria-label="<?= $e('Menukaart') ?>">
     <div class="wesley1-kaart-binnen">

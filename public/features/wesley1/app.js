@@ -12,4 +12,12 @@
             }
         });
     });
+
+    // Afdrukknop: opent het afdrukvenster. De print-CSS in style.css toont enkel de kaart.
+    var afdrukknop = document.getElementById('wesley1-afdrukken');
+    if (afdrukknop) {
+        afdrukknop.addEventListener('click', function () {
+            window.print();
+        });
+    }
 })();

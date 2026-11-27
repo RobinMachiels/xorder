@@ -308,3 +308,68 @@
         font-size: 1.8rem;
     }
 }
+
+/* Balk boven het voorbeeld met de afdrukknop */
+.wesley1-voorbeeld-balk {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.wesley1-voorbeeld-balk .wesley1-voorbeeld-titel {
+    margin: 0;
+}
+
+/* ---------- Afdrukken: enkel de kaart, op A4 ---------- */
+@page {
+    size: A4 portrait;
+    margin: 12mm;
+}
+
+@media print {
+    /* Header, menu, footer, meldingen, formulieren en knoppen hebben .no-print */
+    .no-print {
+        display: none !important;
+    }
+
+    .wesley1-pagina,
+    .wesley1-pagina .container {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: none !important;
+        width: auto !important;
+    }
+
+    /* Kleuren en achtergronden van de kaart mee afdrukken */
+    .wesley1-kaart,
+    .wesley1-kaart * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .wesley1-kaart {
+        max-width: none;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    .wesley1-kaart-binnen {
+        padding: 14mm 16mm 10mm;
+    }
+
+    .wesley1-kaart-titel {
+        font-size: 30pt;
+    }
+
+    .wesley1-kaart-naam {
+        font-size: 13pt;
+    }
+
+    .wesley1-kaart-omschrijving,
+    .wesley1-kaart-prijs {
+        font-size: 11pt;
+    }
+}
