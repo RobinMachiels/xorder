@@ -782,8 +782,13 @@ try {
     display: grid;
     grid-template-columns: 0.95fr 1.05fr;
     gap: 24px;
-    align-items: start;
+    align-items: stretch;
     margin-bottom: 24px;
+}
+.wesley2-left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 .wesley2-eyebrow {
     margin-bottom: 8px;
@@ -831,6 +836,8 @@ try {
 .wesley2-stars {
     position: relative;
     display: inline-flex;
+    width: max-content;
+    justify-self: start;
     line-height: 0;
     vertical-align: middle;
 }
@@ -961,20 +968,52 @@ try {
     outline: 2px solid var(--pine-900);
     outline-offset: 2px;
 }
+.wesley2-form-card {
+    display: flex;
+    flex-direction: column;
+}
+.wesley2-form-card form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.wesley2-comment-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.wesley2-comment-group .form-textarea {
+    flex: 1;
+    min-height: 120px;
+    resize: vertical;
+}
+.wesley2-form-submit {
+    align-self: flex-start;
+    margin-top: 4px;
+}
 .wesley2-toolbar {
-    padding: 16px 20px;
-    margin-bottom: 20px;
+    padding: 20px 22px;
+    margin-bottom: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 .wesley2-filter-form {
     display: grid;
-    grid-template-columns: 1.8fr 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
     align-items: end;
+    flex: 1;
+}
+.wesley2-filter-search {
+    grid-column: 1 / -1;
 }
 .wesley2-filter-actions {
+    grid-column: 1 / -1;
     display: flex;
     gap: 8px;
     align-items: center;
+    margin-top: 2px;
 }
 .wesley2-results-meta {
     margin: 0 0 14px;
@@ -1100,61 +1139,102 @@ try {
     </div>
 
     <div class="wesley2-top-grid">
-        <section class="card wesley2-summary-card" aria-labelledby="wesley2-summary-heading">
-            <div class="wesley2-card-title-row">
-                <h2 id="wesley2-summary-heading"><?= wesley2_e($texts['summary_title']) ?></h2>
-                <?php if ($filters['rating'] !== null): ?>
-                    <a href="<?= wesley2_e($app->request->url('/wesley2', wesley2_filter_query(['rating' => null, 'sort' => $filters['sort'], 'q' => $filters['q']]))) ?>" class="badge badge-gold">
-                        <?= wesley2_e($filters['rating'] === 1 ? $texts['star_label_one'] : wesley2_t($texts, 'star_label_plural', ['n' => $filters['rating']])) ?> &times;
-                    </a>
-                <?php endif; ?>
-            </div>
-
-            <div class="wesley2-summary-head">
-                <div class="wesley2-avg-score">
-                    <?= wesley2_e(number_format($averageRating, 1, '.', '')) ?><span class="wesley2-avg-denom">/5</span>
+        <div class="wesley2-left-col">
+            <section class="card wesley2-summary-card" aria-labelledby="wesley2-summary-heading">
+                <div class="wesley2-card-title-row">
+                    <h2 id="wesley2-summary-heading"><?= wesley2_e($texts['summary_title']) ?></h2>
+                    <?php if ($filters['rating'] !== null): ?>
+                        <a href="<?= wesley2_e($app->request->url('/wesley2', wesley2_filter_query(['rating' => null, 'sort' => $filters['sort'], 'q' => $filters['q']]))) ?>" class="badge badge-gold">
+                            <?= wesley2_e($filters['rating'] === 1 ? $texts['star_label_one'] : wesley2_t($texts, 'star_label_plural', ['n' => $filters['rating']])) ?> &times;
+                        </a>
+                    <?php endif; ?>
                 </div>
-                <div class="wesley2-avg-meta">
-                    <?= wesley2_render_stars_visual($averageRating, 'wesley2-stars-lg') ?>
-                    <div class="wesley2-avg-count">
-                        <?php if ($totalCount === 0): ?>
-                            <?= wesley2_e($texts['summary_empty']) ?>
-                        <?php elseif ($totalCount === 1): ?>
-                            <?= wesley2_e($texts['summary_based_on_one']) ?>
-                        <?php else: ?>
-                            <?= wesley2_e(wesley2_t($texts, 'summary_based_on', ['count' => $totalCount])) ?>
-                        <?php endif; ?>
+
+                <div class="wesley2-summary-head">
+                    <div class="wesley2-avg-score">
+                        <?= wesley2_e(number_format($averageRating, 1, '.', '')) ?><span class="wesley2-avg-denom">/5</span>
+                    </div>
+                    <div class="wesley2-avg-meta">
+                        <?= wesley2_render_stars_visual($averageRating, 'wesley2-stars-lg') ?>
+                        <div class="wesley2-avg-count">
+                            <?php if ($totalCount === 0): ?>
+                                <?= wesley2_e($texts['summary_empty']) ?>
+                            <?php elseif ($totalCount === 1): ?>
+                                <?= wesley2_e($texts['summary_based_on_one']) ?>
+                            <?php else: ?>
+                                <?= wesley2_e(wesley2_t($texts, 'summary_based_on', ['count' => $totalCount])) ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="wesley2-breakdown">
-                <?php for ($star = 5; $star >= 1; $star--): ?>
-                    <?php
-                    $cnt = $starCounts[$star];
-                    $barPct = $totalCount > 0 ? round(($cnt / $totalCount) * 100, 1) : 0.0;
-                    $isCurrentStar = $filters['rating'] === $star;
-                    $targetQuery = wesley2_filter_query([
-                        'rating' => $isCurrentStar ? null : $star,
-                        'sort' => $filters['sort'],
-                        'q' => $filters['q'],
-                    ]);
-                    $starLabel = $star === 1
-                        ? $texts['star_label_one']
-                        : wesley2_t($texts, 'star_label_plural', ['n' => $star]);
-                    ?>
-                    <a href="<?= wesley2_e($app->request->url('/wesley2', $targetQuery)) ?>"
-                       class="wesley2-bar-row <?= $isCurrentStar ? 'is-active' : '' ?>"
-                       title="<?= wesley2_e($isCurrentStar ? $texts['filter_star_clear'] : $starLabel) ?>">
-                        <span class="wesley2-bar-label"><?= wesley2_e($starLabel) ?></span>
-                        <span class="wesley2-bar-track">
-                            <span class="wesley2-bar-fill" style="display:block;width:<?= $barPct ?>%"></span>
-                        </span>
-                        <span class="wesley2-bar-count"><?= wesley2_e((string) $cnt) ?></span>
-                    </a>
-                <?php endfor; ?>
-            </div>
-        </section>
+                <div class="wesley2-breakdown">
+                    <?php for ($star = 5; $star >= 1; $star--): ?>
+                        <?php
+                        $cnt = $starCounts[$star];
+                        $barPct = $totalCount > 0 ? round(($cnt / $totalCount) * 100, 1) : 0.0;
+                        $isCurrentStar = $filters['rating'] === $star;
+                        $targetQuery = wesley2_filter_query([
+                            'rating' => $isCurrentStar ? null : $star,
+                            'sort' => $filters['sort'],
+                            'q' => $filters['q'],
+                        ]);
+                        $starLabel = $star === 1
+                            ? $texts['star_label_one']
+                            : wesley2_t($texts, 'star_label_plural', ['n' => $star]);
+                        ?>
+                        <a href="<?= wesley2_e($app->request->url('/wesley2', $targetQuery)) ?>"
+                           class="wesley2-bar-row <?= $isCurrentStar ? 'is-active' : '' ?>"
+                           title="<?= wesley2_e($isCurrentStar ? $texts['filter_star_clear'] : $starLabel) ?>">
+                            <span class="wesley2-bar-label"><?= wesley2_e($starLabel) ?></span>
+                            <span class="wesley2-bar-track">
+                                <span class="wesley2-bar-fill" style="display:block;width:<?= $barPct ?>%"></span>
+                            </span>
+                            <span class="wesley2-bar-count"><?= wesley2_e((string) $cnt) ?></span>
+                        </a>
+                    <?php endfor; ?>
+                </div>
+            </section>
+
+            <section class="card wesley2-toolbar">
+                <form method="get" action="<?= wesley2_e($pageUrl) ?>" class="wesley2-filter-form">
+                    <div class="wesley2-filter-search">
+                        <label class="form-label" for="wesley2-q"><?= wesley2_e($texts['filter_search_label']) ?></label>
+                        <input id="wesley2-q"
+                               class="form-control"
+                               type="search"
+                               name="q"
+                               value="<?= wesley2_e($filters['q']) ?>"
+                               placeholder="<?= wesley2_e($texts['filter_search_ph']) ?>">
+                    </div>
+                    <div>
+                        <label class="form-label" for="wesley2-filter-rating"><?= wesley2_e($texts['filter_rating_label']) ?></label>
+                        <select id="wesley2-filter-rating" class="form-select" name="rating" data-autosubmit>
+                            <option value=""><?= wesley2_e($texts['filter_rating_all']) ?></option>
+                            <?php for ($s = 5; $s >= 1; $s--): ?>
+                                <?php $optLabel = $s === 1 ? $texts['star_label_one'] : wesley2_t($texts, 'star_label_plural', ['n' => $s]); ?>
+                                <option value="<?= $s ?>" <?= $filters['rating'] === $s ? 'selected' : '' ?>><?= wesley2_e($optLabel) ?></option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" for="wesley2-sort"><?= wesley2_e($texts['filter_sort_label']) ?></label>
+                        <select id="wesley2-sort" class="form-select" name="sort" data-autosubmit>
+                            <option value="newest" <?= $filters['sort'] === 'newest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_newest']) ?></option>
+                            <option value="oldest" <?= $filters['sort'] === 'oldest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_oldest']) ?></option>
+                            <option value="highest" <?= $filters['sort'] === 'highest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_highest']) ?></option>
+                            <option value="lowest" <?= $filters['sort'] === 'lowest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_lowest']) ?></option>
+                        </select>
+                    </div>
+                    <div class="wesley2-filter-actions">
+                        <button type="submit" class="btn btn-primary btn-sm"><?= wesley2_e($texts['filter_apply']) ?></button>
+                        <?php if ($hasActiveFilters): ?>
+                            <a href="<?= wesley2_e($pageUrl) ?>" class="btn btn-outline btn-sm"><?= wesley2_e($texts['filter_reset']) ?></a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </section>
+        </div>
 
         <section class="card wesley2-form-card" aria-labelledby="wesley2-form-heading">
             <div class="wesley2-card-title-row">
@@ -1216,7 +1296,7 @@ try {
                            placeholder="<?= wesley2_e($texts['field_title_ph']) ?>">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group wesley2-comment-group">
                     <label class="form-label" for="wesley2-comment"><?= wesley2_e($texts['field_comment']) ?></label>
                     <textarea id="wesley2-comment"
                               class="form-textarea"
@@ -1227,51 +1307,12 @@ try {
                               placeholder="<?= wesley2_e($texts['field_comment_ph']) ?>"><?= wesley2_e($formValues['comment']) ?></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary wesley2-form-submit">
                     <?= wesley2_e($isEditMode ? $texts['submit_edit'] : $texts['submit_add']) ?>
                 </button>
             </form>
         </section>
     </div>
-
-    <section class="card wesley2-toolbar">
-        <form method="get" action="<?= wesley2_e($pageUrl) ?>" class="wesley2-filter-form">
-            <div>
-                <label class="form-label" for="wesley2-q"><?= wesley2_e($texts['filter_search_label']) ?></label>
-                <input id="wesley2-q"
-                       class="form-control"
-                       type="search"
-                       name="q"
-                       value="<?= wesley2_e($filters['q']) ?>"
-                       placeholder="<?= wesley2_e($texts['filter_search_ph']) ?>">
-            </div>
-            <div>
-                <label class="form-label" for="wesley2-filter-rating"><?= wesley2_e($texts['filter_rating_label']) ?></label>
-                <select id="wesley2-filter-rating" class="form-select" name="rating" data-autosubmit>
-                    <option value=""><?= wesley2_e($texts['filter_rating_all']) ?></option>
-                    <?php for ($s = 5; $s >= 1; $s--): ?>
-                        <?php $optLabel = $s === 1 ? $texts['star_label_one'] : wesley2_t($texts, 'star_label_plural', ['n' => $s]); ?>
-                        <option value="<?= $s ?>" <?= $filters['rating'] === $s ? 'selected' : '' ?>><?= wesley2_e($optLabel) ?></option>
-                    <?php endfor; ?>
-                </select>
-            </div>
-            <div>
-                <label class="form-label" for="wesley2-sort"><?= wesley2_e($texts['filter_sort_label']) ?></label>
-                <select id="wesley2-sort" class="form-select" name="sort" data-autosubmit>
-                    <option value="newest" <?= $filters['sort'] === 'newest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_newest']) ?></option>
-                    <option value="oldest" <?= $filters['sort'] === 'oldest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_oldest']) ?></option>
-                    <option value="highest" <?= $filters['sort'] === 'highest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_highest']) ?></option>
-                    <option value="lowest" <?= $filters['sort'] === 'lowest' ? 'selected' : '' ?>><?= wesley2_e($texts['sort_lowest']) ?></option>
-                </select>
-            </div>
-            <div class="wesley2-filter-actions">
-                <button type="submit" class="btn btn-primary btn-sm"><?= wesley2_e($texts['filter_apply']) ?></button>
-                <?php if ($hasActiveFilters): ?>
-                    <a href="<?= wesley2_e($pageUrl) ?>" class="btn btn-outline btn-sm"><?= wesley2_e($texts['filter_reset']) ?></a>
-                <?php endif; ?>
-            </div>
-        </form>
-    </section>
 
     <?php if ($totalCount > 0): ?>
         <p class="wesley2-results-meta">
