@@ -124,6 +124,14 @@
     align-items: start;
 }
 
+/* Linkerkolom: lijst en voorbeeld onder elkaar. Ze is altijd de langste kolom,
+   zodat er geen leeg vlak ontstaat; de zijbalk schuift mee (sticky) op zijn eigen hoogte. */
+.wesley1-hoofdkolom {
+    display: grid;
+    gap: 24px;
+    min-width: 0;
+}
+
 .wesley1-zijbalk {
     display: grid;
     gap: 20px;
@@ -664,9 +672,18 @@
         grid-template-columns: 1fr;
     }
 
+    /* Eén kolom, gewoon onder elkaar (geen kaders naast elkaar met lege ruimte):
+       lijst, dan instellingen en toevoegen, dan het voorbeeld */
+    .wesley1-hoofdkolom {
+        display: contents;
+    }
+
     .wesley1-zijbalk {
         position: static;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .wesley1-podium {
+        order: 3;
     }
 }
 
@@ -723,9 +740,17 @@
         display: none !important;
     }
 
+    /* Bij afdrukken is de zijbalk weg: geen kolommen meer, de kaart krijgt de volle breedte */
+    .wesley1-werkblad,
+    .wesley1-hoofdkolom {
+        display: block !important;
+    }
+
     .wesley1-pagina,
     .wesley1-pagina .container,
     .wesley1-app,
+    .wesley1-werkblad,
+    .wesley1-hoofdkolom,
     .wesley1-podium {
         padding: 0 !important;
         margin: 0 !important;

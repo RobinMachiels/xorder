@@ -424,10 +424,11 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
         </div>
     </header>
 
-    <div class="wesley1-werkblad no-print">
+    <div class="wesley1-werkblad">
 
         <!-- Linkerkolom: de kaart beheren -->
-        <section class="wesley1-paneel wesley1-lijstpaneel" aria-labelledby="wesley1-lijst-titel">
+        <div class="wesley1-hoofdkolom">
+        <section class="wesley1-paneel wesley1-lijstpaneel no-print" aria-labelledby="wesley1-lijst-titel">
             <div class="wesley1-paneel-kop">
                 <div>
                     <h2 id="wesley1-lijst-titel"><?= $e('Op de kaart') ?></h2>
@@ -555,8 +556,54 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
             <?php endif; ?>
         </section>
 
+        <!-- Voorbeeld van de kaart -->
+        <section class="wesley1-podium" aria-labelledby="wesley1-voorbeeld-titel">
+            <div class="wesley1-podium-kop no-print">
+                <h2 id="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
+                <p><?= $e('Zo ziet je klant de kaart. Met "Afdrukken" komt enkel deze kaart op A4.') ?></p>
+            </div>
+
+            <article class="wesley1-kaart" aria-label="<?= $e('Menukaart') ?>">
+                <div class="wesley1-kaart-binnen">
+                    <header class="wesley1-kaart-kop">
+                        <p class="wesley1-kaart-ster" aria-hidden="true"><?= $e('✦ ✦ ✦') ?></p>
+                        <h3 class="wesley1-kaart-titel"><?= $e($menu['titel']) ?></h3>
+                        <?php if ($menu['ondertitel'] !== ''): ?>
+                            <p class="wesley1-kaart-ondertitel"><?= $e($menu['ondertitel']) ?></p>
+                        <?php endif; ?>
+                        <div class="wesley1-kaart-sier" aria-hidden="true"></div>
+                    </header>
+
+                    <?php if ($items === []): ?>
+                        <p class="wesley1-kaart-leeg"><?= $e('De kaart is nog leeg.') ?></p>
+                    <?php else: ?>
+                        <ul class="wesley1-kaart-lijst">
+                            <?php foreach ($items as $item): ?>
+                                <li class="wesley1-kaart-item">
+                                    <div class="wesley1-kaart-regel">
+                                        <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
+                                        <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
+                                        <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
+                                    </div>
+                                    <?php if ((string) $item['omschrijving'] !== ''): ?>
+                                        <p class="wesley1-kaart-omschrijving"><?= $e($item['omschrijving']) ?></p>
+                                    <?php endif; ?>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php endif; ?>
+
+                    <footer class="wesley1-kaart-voet">
+                        <div class="wesley1-kaart-sier" aria-hidden="true"></div>
+                        <p><?= $e('Prettige feestdagen!') ?></p>
+                    </footer>
+                </div>
+            </article>
+        </section>
+        </div>
+
         <!-- Rechterkolom: instellingen en toevoegen -->
-        <aside class="wesley1-zijbalk">
+        <aside class="wesley1-zijbalk no-print">
             <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-paneel">
                 <?= $csrfField() ?>
                 <input type="hidden" name="actie" value="instellingen">
@@ -638,51 +685,6 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
             </div>
         </aside>
     </div>
-
-    <!-- Voorbeeld van de kaart -->
-    <section class="wesley1-podium" aria-labelledby="wesley1-voorbeeld-titel">
-        <div class="wesley1-podium-kop no-print">
-            <h2 id="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
-            <p><?= $e('Zo ziet je klant de kaart. Met "Afdrukken" komt enkel deze kaart op A4.') ?></p>
-        </div>
-
-        <article class="wesley1-kaart" aria-label="<?= $e('Menukaart') ?>">
-            <div class="wesley1-kaart-binnen">
-                <header class="wesley1-kaart-kop">
-                    <p class="wesley1-kaart-ster" aria-hidden="true"><?= $e('✦ ✦ ✦') ?></p>
-                    <h3 class="wesley1-kaart-titel"><?= $e($menu['titel']) ?></h3>
-                    <?php if ($menu['ondertitel'] !== ''): ?>
-                        <p class="wesley1-kaart-ondertitel"><?= $e($menu['ondertitel']) ?></p>
-                    <?php endif; ?>
-                    <div class="wesley1-kaart-sier" aria-hidden="true"></div>
-                </header>
-
-                <?php if ($items === []): ?>
-                    <p class="wesley1-kaart-leeg"><?= $e('De kaart is nog leeg.') ?></p>
-                <?php else: ?>
-                    <ul class="wesley1-kaart-lijst">
-                        <?php foreach ($items as $item): ?>
-                            <li class="wesley1-kaart-item">
-                                <div class="wesley1-kaart-regel">
-                                    <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
-                                    <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
-                                    <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
-                                </div>
-                                <?php if ((string) $item['omschrijving'] !== ''): ?>
-                                    <p class="wesley1-kaart-omschrijving"><?= $e($item['omschrijving']) ?></p>
-                                <?php endif; ?>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
-                <?php endif; ?>
-
-                <footer class="wesley1-kaart-voet">
-                    <div class="wesley1-kaart-sier" aria-hidden="true"></div>
-                    <p><?= $e('Prettige feestdagen!') ?></p>
-                </footer>
-            </div>
-        </article>
-    </section>
 </div>
 
 <script src="<?= $e($asset('app.js')) ?>"></script>
