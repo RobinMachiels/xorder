@@ -61,7 +61,10 @@ declare(strict_types=1);
                 <a class="nav-link <?= $currentPath === '/app/kitchen' ? 'is-active' : '' ?>" href="<?= $e($url('/app/kitchen')) ?>"><?= $e($t('nav.kitchen')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/products' ? 'is-active' : '' ?>" href="<?= $e($url('/app/products')) ?>"><?= $e($t('nav.products')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/settings' ? 'is-active' : '' ?>" href="<?= $e($url('/app/settings')) ?>"><?= $e($t('nav.settings')) ?></a>
-            <?php else: ?>
+           <?php if ($featureNames !== []): ?>
+    <a class="nav-link" href="<?= $e($url('/jeroen.php')) ?>">Order Health Check</a>
+<?php endif; ?>
+ <?php else: ?>
                 <a class="nav-link" href="<?= $e($url('/#voordelen')) ?>"><?= $e($t('nav.features')) ?></a>
                 <a class="nav-link" href="<?= $e($url('/#excel-backup')) ?>"><?= $e($t('nav.excel')) ?></a>
                 <a class="nav-link" href="<?= $e($url('/#waarom-gratis')) ?>"><?= $e($t('nav.why_free')) ?></a>
