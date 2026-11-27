@@ -33,11 +33,10 @@
    Kopbalk
    ====================================================================== */
 .wesley1-kop {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: 24px;
-    flex-wrap: wrap;
     padding: 28px 32px;
     border-radius: var(--wesley1-radius);
     background:
@@ -76,21 +75,22 @@
     color: rgba(255, 255, 255, 0.78);
 }
 
+/* Rechts in de kopbalk: cijfers boven, afdrukknop eronder, samen 240px breed (even breed als elke knop) */
 .wesley1-kop-acties {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
+    display: grid;
+    gap: 10px;
+    width: 240px;
 }
 
 .wesley1-cijfers {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
 }
 
 .wesley1-cijfer {
     display: grid;
-    min-width: 108px;
+    min-width: 0;
     padding: 10px 14px;
     border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: var(--radius-md, 12px);
@@ -108,10 +108,29 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-.wesley1-knop-icoon {
+/* ======================================================================
+   Knoppen: elke tekstknop op deze pagina is even groot en gelijk van vorm
+   ====================================================================== */
+.wesley1-app .wesley1-knop {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    box-sizing: border-box;
+    height: 42px;
+    min-width: 240px;
+    margin: 0;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-size: 0.94rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.wesley1-app .wesley1-knop svg {
+    width: 18px;
+    height: 18px;
 }
 
 /* ======================================================================
@@ -189,11 +208,6 @@
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--wesley1-tekst-zacht);
-}
-
-.wesley1-vol {
-    width: 100%;
-    justify-content: center;
 }
 
 .wesley1-hint {
@@ -282,24 +296,15 @@
     background: var(--wesley1-zacht);
 }
 
+/* Omhoog/omlaag naast elkaar, even groot als de andere icoonknoppen */
 .wesley1-volgorde {
-    display: grid;
-    gap: 2px;
+    display: flex;
+    gap: 4px;
 }
 
 .wesley1-volgorde form,
 .wesley1-rij-acties form {
     margin: 0;
-}
-
-.wesley1-volgorde .wesley1-icoonknop {
-    width: 26px;
-    height: 20px;
-}
-
-.wesley1-volgorde .wesley1-icoonknop svg {
-    width: 14px;
-    height: 14px;
 }
 
 .wesley1-nummer {
@@ -377,9 +382,9 @@
     width: 34px;
     height: 34px;
     padding: 0;
-    border: 1px solid transparent;
+    border: 1px solid var(--wesley1-rand);
     border-radius: var(--radius-sm, 8px);
-    background: transparent;
+    background: var(--surface, #fff);
     color: var(--wesley1-tekst-zacht);
     cursor: pointer;
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
@@ -387,8 +392,8 @@
 
 .wesley1-icoonknop:hover:not(:disabled),
 .wesley1-icoonknop[aria-expanded="true"] {
-    border-color: var(--wesley1-rand);
-    background: var(--surface, #fff);
+    border-color: var(--pine-800, #1d473c);
+    background: var(--pine-100, #e7f0ed);
     color: var(--wesley1-pine);
 }
 
@@ -415,7 +420,7 @@
     gap: 12px;
     align-items: end;
     margin: 0;
-    padding: 4px 14px 16px 96px;
+    padding: 4px 14px 16px 142px;
     background: var(--wesley1-zacht);
 }
 
@@ -787,5 +792,50 @@
     .wesley1-kaart-omschrijving,
     .wesley1-kaart-prijs {
         font-size: 11pt;
+    }
+}
+
+/* Knoppen in formulieren en panelen: eigen breedte, niet uitgerekt */
+.wesley1-velden > .wesley1-knop,
+.wesley1-paneel-kop .wesley1-knop {
+    justify-self: start;
+}
+
+.wesley1-bewerk-knoppen .wesley1-knop {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 680px) {
+    .wesley1-app .wesley1-knop {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .wesley1-velden > .wesley1-knop,
+    .wesley1-paneel-kop .wesley1-knop {
+        justify-self: stretch;
+    }
+
+    .wesley1-paneel-kop {
+        flex-wrap: wrap;
+    }
+
+    .wesley1-paneel-kop form {
+        width: 100%;
+    }
+
+    .wesley1-bewerk-knoppen {
+        flex-direction: column-reverse;
+    }
+}
+
+@media (max-width: 680px) {
+    /* Kopbalk op gsm: alles onder elkaar, over de volle breedte */
+    .wesley1-kop {
+        grid-template-columns: 1fr;
+    }
+
+    .wesley1-kop-acties {
+        width: 100%;
     }
 }

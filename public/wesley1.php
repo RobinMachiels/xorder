@@ -416,7 +416,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                 </div>
             </div>
             <?php if ($items !== []): ?>
-                <button type="button" class="btn btn-gold wesley1-knop-icoon" id="wesley1-afdrukken">
+                <button type="button" class="btn btn-gold wesley1-knop" id="wesley1-afdrukken">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></svg>
                     <?= $e('Afdrukken') ?>
                 </button>
@@ -438,7 +438,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                     <form method="post" action="<?= $e($paginaUrl) ?>">
                         <?= $csrfField() ?>
                         <input type="hidden" name="actie" value="overnemen">
-                        <button type="submit" class="btn btn-outline btn-sm">
+                        <button type="submit" class="btn btn-outline wesley1-knop">
                             <?= $e('Assortiment overnemen (' . $aantalNieuw . ')') ?>
                         </button>
                     </form>
@@ -453,7 +453,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                     </div>
                     <h3><?= $e('Voeg eerst producten toe') ?></h3>
                     <p><?= $e('Je hebt nog geen actieve producten in je assortiment. Voeg ze toe op de productpagina, dan zet je ze hier met één klik op de kaart. Een eigen gerecht toevoegen kan nu al, via het paneel rechts.') ?></p>
-                    <a class="btn btn-primary" href="<?= $e($url('/app/products')) ?>"><?= $e('Naar mijn producten') ?></a>
+                    <a class="btn btn-primary wesley1-knop" href="<?= $e($url('/app/products')) ?>"><?= $e('Naar mijn producten') ?></a>
                 </div>
             <?php elseif ($items === []): ?>
                 <!-- Lege toestand: wel producten, maar de kaart is nog leeg -->
@@ -467,7 +467,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                     <p><?= $e($aantalNieuw === 1
                         ? 'Zet je actieve product in één klik op de kaart. Daarna pas je naam, omschrijving, prijs en volgorde aan.'
                         : 'Zet je ' . $aantalNieuw . ' actieve producten in één klik op de kaart. Daarna pas je namen, omschrijvingen, prijzen en volgorde aan.') ?></p>
-                    <button type="submit" class="btn btn-primary"><?= $e('Assortiment overnemen') ?></button>
+                    <button type="submit" class="btn btn-primary wesley1-knop"><?= $e('Assortiment overnemen') ?></button>
                 </form>
             <?php else: ?>
                 <ol class="wesley1-rijen">
@@ -546,8 +546,8 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                                            value="<?= $e(number_format((float) $item['prijs'], 2, '.', '')) ?>">
                                 </label>
                                 <div class="wesley1-bewerk-knoppen">
-                                    <button type="button" class="btn btn-outline btn-sm" data-wesley1-sluit="wesley1-bewerk-<?= $e($itemId) ?>"><?= $e('Annuleren') ?></button>
-                                    <button type="submit" class="btn btn-primary btn-sm"><?= $e('Bewaar') ?></button>
+                                    <button type="button" class="btn btn-outline wesley1-knop" data-wesley1-sluit="wesley1-bewerk-<?= $e($itemId) ?>"><?= $e('Annuleren') ?></button>
+                                    <button type="submit" class="btn btn-primary wesley1-knop"><?= $e('Bewaar') ?></button>
                                 </div>
                             </form>
                         </li>
@@ -624,7 +624,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                         <input class="form-control" type="text" name="ondertitel" maxlength="200"
                                value="<?= $e($menu['ondertitel']) ?>" placeholder="<?= $e('Bestel tijdig voor de feestdagen') ?>">
                     </label>
-                    <button type="submit" class="btn btn-primary wesley1-vol"><?= $e('Bewaar') ?></button>
+                    <button type="submit" class="btn btn-primary wesley1-knop"><?= $e('Bewaar') ?></button>
                 </div>
             </form>
 
@@ -656,7 +656,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                                 <?php endforeach; ?>
                             </select>
                         </label>
-                        <button type="submit" class="btn btn-primary wesley1-vol"><?= $e('Op de kaart zetten') ?></button>
+                        <button type="submit" class="btn btn-primary wesley1-knop"><?= $e('Op de kaart zetten') ?></button>
                     </form>
                 <?php endif; ?>
 
@@ -680,7 +680,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                         <span><?= $e('Prijs (€)') ?></span>
                         <input class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" value="0.00" required>
                     </label>
-                    <button type="submit" class="btn btn-primary wesley1-vol"><?= $e('Op de kaart zetten') ?></button>
+                    <button type="submit" class="btn btn-primary wesley1-knop"><?= $e('Op de kaart zetten') ?></button>
                 </form>
             </div>
         </aside>
