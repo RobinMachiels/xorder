@@ -55,6 +55,7 @@ declare(strict_types=1);
             <?php if ($featureNames !== []): ?>
                 <a class="nav-link nav-link-features <?= str_starts_with($currentPath, '/features') ? 'is-active' : '' ?>" href="<?= $e($url('/features')) ?>">Features</a>
             <?php endif; ?>
+            <a href="wesley1.php">wesley1</a>
             <?php if ($user !== null): ?>
                 <a class="nav-link <?= $currentPath === '/app' ? 'is-active' : '' ?>" href="<?= $e($url('/app')) ?>"><?= $e($t('nav.dashboard')) ?></a>
                 <a class="nav-link <?= str_starts_with($currentPath, '/app/order') ? 'is-active' : '' ?>" href="<?= $e($url('/app/orders')) ?>"><?= $e($t('nav.orders')) ?></a>
