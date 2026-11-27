@@ -8,12 +8,12 @@ if (!isset($_SESSION['inkooplijst'])) {
 
 // Voorbeeldbestellingen en promoties voor de klantweergave.
 $klantBestellingen = [
-    ['klant' => 'Emma', 'producten' => 'Volkorenbrood × 1, Jonge kaas × 2', 'datum' => 'Vandaag', 'tijd' => '09:20'],
-    ['klant' => 'Noah', 'producten' => 'Croissants × 4, Sinaasappelsap × 1', 'datum' => 'Vandaag', 'tijd' => '10:15'],
-    ['klant' => 'Mila', 'producten' => 'Appeltaart × 1, Koffiebonen × 1', 'datum' => 'Gisteren', 'tijd' => '10:42'],
-    ['klant' => 'Liam', 'producten' => 'Volkorenbrood × 2', 'datum' => 'Gisteren', 'tijd' => '11:05'],
-    ['klant' => 'Louise', 'producten' => 'Croissants × 6', 'datum' => 'Gisteren', 'tijd' => '11:35'],
-    ['klant' => 'Adam', 'producten' => 'Jonge kaas × 1', 'datum' => 'Gisteren', 'tijd' => '13:10'],
+    ['klant' => 'Emma', 'producten' => 'Volkorenbrood × 1, Jonge kaas × 2', 'datum' => 'Vandaag', 'tijd' => '09:20', 'artikelen' => [['product' => 'Volkorenbrood', 'aantal' => 1, 'prijs' => 3.25], ['product' => 'Jonge kaas', 'aantal' => 2, 'prijs' => 4.75]]],
+    ['klant' => 'Noah', 'producten' => 'Croissants × 4, Sinaasappelsap × 1', 'datum' => 'Vandaag', 'tijd' => '10:15', 'artikelen' => [['product' => 'Croissants', 'aantal' => 4, 'prijs' => 1.25], ['product' => 'Sinaasappelsap', 'aantal' => 1, 'prijs' => 3.49]]],
+    ['klant' => 'Mila', 'producten' => 'Appeltaart × 1, Koffiebonen × 1', 'datum' => 'Gisteren', 'tijd' => '10:42', 'artikelen' => [['product' => 'Appeltaart', 'aantal' => 1, 'prijs' => 12.50], ['product' => 'Koffiebonen', 'aantal' => 1, 'prijs' => 8.95]]],
+    ['klant' => 'Liam', 'producten' => 'Volkorenbrood × 2', 'datum' => 'Gisteren', 'tijd' => '11:05', 'artikelen' => [['product' => 'Volkorenbrood', 'aantal' => 2, 'prijs' => 3.25]]],
+    ['klant' => 'Louise', 'producten' => 'Croissants × 6', 'datum' => 'Gisteren', 'tijd' => '11:35', 'artikelen' => [['product' => 'Croissants', 'aantal' => 6, 'prijs' => 1.25]]],
+    ['klant' => 'Adam', 'producten' => 'Jonge kaas × 1', 'datum' => 'Gisteren', 'tijd' => '13:10', 'artikelen' => [['product' => 'Jonge kaas', 'aantal' => 1, 'prijs' => 4.75]]],
 ];
 $bestellingenPerUur = [];
 foreach ($klantBestellingen as $bestelling) {
@@ -146,6 +146,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'prijs' => $seizoensItem['prijs'],
                 'gekocht' => false
             ];
+        }
+    }
+
+    // Een eerdere bestelling in één keer opnieuw aan de inkooplijst toevoegen.
+    if ($actie === 'bestel_opnieuw' && isset($_POST['bestelling'])) {
+        $bestellingIndex = filter_var($_POST['bestelling'], FILTER_VALIDATE_INT);
+        if ($bestellingIndex !== false && isset($klantBestellingen[$bestellingIndex])) {
+            foreach ($klantBestellingen[$bestellingIndex]['artikelen'] as $besteldArtikel) {
+                $_SESSION['inkooplijst'][] = [
+                    'id' => uniqid(),
+                    'product' => $besteldArtikel['product'],
+                    'aantal' => $besteldArtikel['aantal'],
+                    'prijs' => $besteldArtikel['prijs'],
+                    'gekocht' => false
+                ];
+            }
         }
     }
 
@@ -332,6 +348,7 @@ foreach ($_SESSION['inkooplijst'] as $item) {
         .overzicht-kaart h2 { margin: 0 0 12px; font-size: 18px; }
         .bestelling { border-top: 1px solid #eee; padding: 10px 0; }
         .bestelling:first-of-type { border-top: 0; }
+        .btn-herhaal { margin-top: 8px; padding: 7px 10px; background: var(--season-soft); color: #263d34; font-size: 13px; }
         .bestelling small, .promo-label { color: #687873; }
         .promo-item { border-top: 1px solid #eee; padding: 12px 0; }
         .promo-item:first-of-type { border-top: 0; }
@@ -417,11 +434,16 @@ foreach ($_SESSION['inkooplijst'] as $item) {
     <div class="overzicht-grid">
         <section class="overzicht-kaart tutorial-doel" id="klantbestellingen" aria-labelledby="klantbestellingen-titel">
             <h2 id="klantbestellingen-titel">Wat klanten bestelden</h2>
-            <?php foreach ($klantBestellingen as $bestelling): ?>
+            <?php foreach ($klantBestellingen as $loopIndex => $bestelling): ?>
                 <div class="bestelling">
                     <strong><?= htmlspecialchars($bestelling['klant'], ENT_QUOTES, 'UTF-8') ?></strong>
                     <small> · <?= htmlspecialchars($bestelling['datum'], ENT_QUOTES, 'UTF-8') ?>, <?= htmlspecialchars($bestelling['tijd'], ENT_QUOTES, 'UTF-8') ?></small>
                     <div><?= htmlspecialchars($bestelling['producten'], ENT_QUOTES, 'UTF-8') ?></div>
+                    <form method="POST">
+                        <input type="hidden" name="actie" value="bestel_opnieuw">
+                        <input type="hidden" name="bestelling" value="<?= (int) $loopIndex ?>">
+                        <button type="submit" class="btn-herhaal">↻ Bestel opnieuw</button>
+                    </form>
                 </div>
             <?php endforeach; ?>
         </section>
