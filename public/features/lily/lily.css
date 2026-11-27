@@ -1,0 +1,104 @@
+/* Stijlen voor de Business Intelligence feature van Lily */
+.lily-section {
+    margin-bottom: 24px;
+}
+
+.lily-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.lily-filter-field {
+    min-width: 135px;
+}
+
+.lily-filter-field .form-label {
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+}
+
+.lily-stat-sub {
+    margin-top: 6px;
+    font-size: 0.82rem;
+    color: var(--ink-600);
+}
+
+.lily-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.lily-card-head h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.lily-num {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.lily-muted {
+    color: var(--ink-600);
+    margin: 0;
+}
+
+.lily-bar-list {
+    display: grid;
+    gap: 12px;
+}
+
+.lily-bar-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+
+.lily-progress {
+    display: block;
+    width: 100%;
+    height: 8px;
+    border: 0;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--cream-100);
+    appearance: none;
+}
+
+.lily-progress::-webkit-progress-bar {
+    background: var(--cream-100);
+    border-radius: 999px;
+}
+
+.lily-progress::-webkit-progress-value {
+    background: var(--pine-900);
+    border-radius: 999px;
+}
+
+.lily-progress::-moz-progress-bar {
+    background: var(--pine-900);
+    border-radius: 999px;
+}
+
+.lily-progress-gold::-webkit-progress-value {
+    background: var(--gold-500);
+}
+
+.lily-progress-gold::-moz-progress-bar {
+    background: var(--gold-500);
+}
+
+.lily-unsold {
+    margin: 14px 0 0;
+    font-size: 0.88rem;
+    opacity: 0.9;
+}
