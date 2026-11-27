@@ -601,11 +601,10 @@
     color: var(--wesley1-inkt);
 }
 
+/* Lege ruimte tussen naam en prijs (zonder stippellijn), zodat de prijzen rechts onder elkaar staan */
 .wesley1-kaart-stippen {
     flex: 1;
     min-width: 24px;
-    border-bottom: 2px dotted var(--wesley1-goud);
-    transform: translateY(-4px);
 }
 
 .wesley1-kaart-prijs {
@@ -883,13 +882,6 @@
 @media print {
     .wesley1-kaart-gangtitel {
         font-size: 14pt;
-    }
-}
-
-@media print {
-    /* Geen stippellijn in de afdruk (PDF): de lege ruimte blijft, zodat de prijs rechts uitgelijnd staat */
-    .wesley1-kaart-stippen {
-        border-bottom: 0;
     }
 }
 
