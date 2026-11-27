@@ -66,9 +66,55 @@ if (!isset($wesley1Sjabloon)) {
                 omschrijving TEXT NOT NULL DEFAULT '',
                 prijs        REAL NOT NULL DEFAULT 0,
                 volgorde     INTEGER NOT NULL DEFAULT 0,
+                gang         TEXT NOT NULL DEFAULT '',
                 created_at   TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
             )"
         );
+        // Bestond de tabel al zonder kolom "gang"? Dan voegen we ze toe (enkel in mijn eigen tabel).
+        $kolommen = array_column($app->db->fetchAll('PRAGMA table_info(wesley1_menu_items)'), 'name');
+        if (!in_array('gang', $kolommen, true)) {
+            $app->db->pdo()->exec("ALTER TABLE wesley1_menu_items ADD COLUMN gang TEXT NOT NULL DEFAULT ''");
+        }
+
+        // De drie gangen van de kaart, in de volgorde waarin ze op de kaart staan
+        $gangen = [
+            'voorgerecht' => ['enkelvoud' => 'Voorgerecht', 'meervoud' => 'Voorgerechten'],
+            'hoofdgerecht' => ['enkelvoud' => 'Hoofdgerecht', 'meervoud' => 'Hoofdgerechten'],
+            'dessert' => ['enkelvoud' => 'Dessert', 'meervoud' => 'Desserten'],
+        ];
+        // Gang voorstellen op basis van de categorie van een product (de handelaar kan ze nadien aanpassen)
+        $gangVoorCategorie = static function (string $categorie): string {
+            $categorie = mb_strtolower($categorie);
+            foreach (['voorgerecht', 'soep', 'aperitief', 'hapje', 'amuse', 'entrée', 'starter'] as $woord) {
+                if (str_contains($categorie, $woord)) {
+                    return 'voorgerecht';
+                }
+            }
+            foreach (['dessert', 'nagerecht', 'gebak', 'taart', 'ijs', 'tiramisu', 'mousse', 'pudding', 'stronk', 'bavarois'] as $woord) {
+                if (str_contains($categorie, $woord)) {
+                    return 'dessert';
+                }
+            }
+
+            return 'hoofdgerecht';
+        };
+        // Items van vóór de gangen hebben nog geen gang: eenmalig invullen voor deze handelaar
+        // (uit assortiment: de categorie van het product; eigen gerecht: de omschrijving en de naam)
+        $zonderGang = $app->db->fetchAll(
+            "SELECT i.id, i.naam, i.omschrijving, p.category FROM wesley1_menu_items i
+             LEFT JOIN products p ON p.id = i.product_id AND p.user_id = ?
+             WHERE i.user_id = ? AND i.gang = ''",
+            [$user->id, $user->id]
+        );
+        foreach ($zonderGang as $rij) {
+            $hint = $rij['category'] !== null ? (string) $rij['category'] : $rij['omschrijving'] . ' ' . $rij['naam'];
+            $app->db->execute(
+                'UPDATE wesley1_menu_items SET gang = ? WHERE id = ? AND user_id = ?',
+                [$gangVoorCategorie($hint), (int) $rij['id'], $user->id]
+            );
+        }
+        // Sorteervolgorde in SQL: eerst per gang, dan de ingestelde volgorde
+        $sorteerOpGang = "CASE gang WHEN 'voorgerecht' THEN 1 WHEN 'hoofdgerecht' THEN 2 WHEN 'dessert' THEN 3 ELSE 4 END";
 
         // Producten van deze handelaar: enkel LEZEN uit products, altijd gefilterd op user_id, enkel actieve.
         $actieveProducten = static function () use ($app, $user): array {
@@ -89,10 +135,10 @@ if (!isset($wesley1Sjabloon)) {
         };
         // Een product uit het assortiment als nieuw item op de kaart zetten (enkel in wesley1_menu_items).
         // Zonder omschrijving: onder de naam staat niets, tenzij de handelaar zelf een omschrijving invult.
-        $zetOpKaart = static function (array $product) use ($app, $user, $volgendeVolgorde): void {
+        $zetOpKaart = static function (array $product) use ($app, $user, $volgendeVolgorde, $gangVoorCategorie): void {
             $app->db->execute(
-                'INSERT INTO wesley1_menu_items (user_id, product_id, naam, omschrijving, prijs, volgorde, created_at)
-                 VALUES (?, ?, ?, ?, ?, ?, ?)',
+                'INSERT INTO wesley1_menu_items (user_id, product_id, naam, omschrijving, prijs, volgorde, gang, created_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
                 [
                     $user->id,
                     (int) $product['id'],
@@ -100,6 +146,7 @@ if (!isset($wesley1Sjabloon)) {
                     '',
                     round((float) $product['price'], 2),
                     $volgendeVolgorde(),
+                    $gangVoorCategorie((string) $product['category']),
                     date('Y-m-d H:i:s'),
                 ]
             );
@@ -214,27 +261,31 @@ if (!isset($wesley1Sjabloon)) {
                 $naam = $tekst('naam', 160);
                 $omschrijving = $tekst('omschrijving', 300);
                 $prijsWaarde = $prijsUitFormulier();
+                $gang = (string) $request->post('gang', '');
                 if ($naam === '') {
                     $terug('error', 'Geef een naam op.');
                 }
                 if ($prijsWaarde === null) {
                     $terug('error', 'Geef een geldige prijs op (0 of meer, bv. 12,50).');
                 }
+                if (!isset($gangen[$gang])) {
+                    $terug('error', 'Kies een gang: voorgerecht, hoofdgerecht of dessert.');
+                }
 
                 if ($actie === 'toevoegen_eigen') {
                     // Eigen gerecht: product_id blijft leeg
                     $app->db->execute(
-                        'INSERT INTO wesley1_menu_items (user_id, product_id, naam, omschrijving, prijs, volgorde, created_at)
-                         VALUES (?, NULL, ?, ?, ?, ?, ?)',
-                        [$user->id, $naam, $omschrijving, $prijsWaarde, $volgendeVolgorde(), date('Y-m-d H:i:s')]
+                        'INSERT INTO wesley1_menu_items (user_id, product_id, naam, omschrijving, prijs, volgorde, gang, created_at)
+                         VALUES (?, NULL, ?, ?, ?, ?, ?, ?)',
+                        [$user->id, $naam, $omschrijving, $prijsWaarde, $volgendeVolgorde(), $gang, date('Y-m-d H:i:s')]
                     );
                     $terug('success', 'Eigen gerecht op de kaart gezet.');
                 }
 
                 // Aanpassen: enkel in wesley1_menu_items en enkel een item van deze handelaar
                 $aangepast = $app->db->execute(
-                    'UPDATE wesley1_menu_items SET naam = ?, omschrijving = ?, prijs = ? WHERE id = ? AND user_id = ?',
-                    [$naam, $omschrijving, $prijsWaarde, $idUitFormulier('item_id'), $user->id]
+                    'UPDATE wesley1_menu_items SET naam = ?, omschrijving = ?, prijs = ?, gang = ? WHERE id = ? AND user_id = ?',
+                    [$naam, $omschrijving, $prijsWaarde, $gang, $idUitFormulier('item_id'), $user->id]
                 );
                 if ($aangepast === 0) {
                     $terug('error', 'Dit item staat niet op je kaart.');
@@ -243,22 +294,23 @@ if (!isset($wesley1Sjabloon)) {
             }
 
             if ($actie === 'omhoog' || $actie === 'omlaag') {
-                // Huidige volgorde van de kaart van deze handelaar
-                $ids = array_map(
-                    static fn (array $rij): int => (int) $rij['id'],
-                    $app->db->fetchAll(
-                        'SELECT id FROM wesley1_menu_items WHERE user_id = ? ORDER BY volgorde ASC, id ASC',
-                        [$user->id]
-                    )
+                // Huidige volgorde van de kaart van deze handelaar: per gang, dan de ingestelde volgorde
+                $rijen = $app->db->fetchAll(
+                    'SELECT id, gang FROM wesley1_menu_items WHERE user_id = ? ORDER BY ' . $sorteerOpGang . ', volgorde ASC, id ASC',
+                    [$user->id]
                 );
+                $ids = array_map(static fn (array $rij): int => (int) $rij['id'], $rijen);
                 $plaats = array_search($idUitFormulier('item_id'), $ids, true);
                 if ($plaats === false) {
                     $terug('error', 'Dit item staat niet op je kaart.');
                 }
 
+                // Verplaatsen kan enkel binnen dezelfde gang
                 $buur = $actie === 'omhoog' ? $plaats - 1 : $plaats + 1;
-                if (!isset($ids[$buur])) {
-                    $terug('success', $actie === 'omhoog' ? 'Dit item staat al bovenaan.' : 'Dit item staat al onderaan.');
+                if (!isset($rijen[$buur]) || $rijen[$buur]['gang'] !== $rijen[$plaats]['gang']) {
+                    $terug('success', $actie === 'omhoog'
+                        ? 'Dit item staat al bovenaan in zijn gang.'
+                        : 'Dit item staat al onderaan in zijn gang.');
                 }
 
                 // Wisselen met de buur en alles opnieuw nummeren (1, 2, 3, ...)
@@ -293,12 +345,18 @@ if (!isset($wesley1Sjabloon)) {
         $menu = $app->db->fetchOne('SELECT titel, ondertitel FROM wesley1_menu WHERE user_id = ?', [$user->id])
             ?? ['titel' => 'Feestmenu', 'ondertitel' => ''];
 
-        // Items op de kaart, in de ingestelde volgorde
+        // Items op de kaart: per gang (voorgerecht, hoofdgerecht, dessert), dan in de ingestelde volgorde
         $items = $app->db->fetchAll(
-            'SELECT id, product_id, naam, omschrijving, prijs FROM wesley1_menu_items
-             WHERE user_id = ? ORDER BY volgorde ASC, id ASC',
+            'SELECT id, product_id, naam, omschrijving, prijs, gang FROM wesley1_menu_items
+             WHERE user_id = ? ORDER BY ' . $sorteerOpGang . ', volgorde ASC, id ASC',
             [$user->id]
         );
+        // Dezelfde items gegroepeerd per gang (lege gangen worden niet getoond)
+        $perGang = array_fill_keys(array_keys($gangen), []);
+        foreach ($items as $item) {
+            $perGang[isset($gangen[$item['gang']]) ? $item['gang'] : 'hoofdgerecht'][] = $item;
+        }
+        $perGang = array_filter($perGang, static fn (array $lijst): bool => $lijst !== []);
 
         // Actieve producten die nog niet op de kaart staan
         $alOpKaart = $productIdsOpKaart();
@@ -325,6 +383,8 @@ if (!isset($wesley1Sjabloon)) {
             'asset' => $asset,
             'menu' => $menu,
             'items' => $items,
+            'perGang' => $perGang,
+            'gangen' => $gangen,
             'producten' => $producten,
             'nietOpKaart' => $nietOpKaart,
         ]);
@@ -366,7 +426,9 @@ if (!isset($wesley1Sjabloon)) {
  * @var string $paginaUrl
  * @var callable $asset
  * @var array{titel: string, ondertitel: string} $menu
- * @var array<int, array<string, mixed>> $items        items op de kaart, in volgorde
+ * @var array<int, array<string, mixed>> $items        items op de kaart, per gang en in volgorde
+ * @var array<string, array<int, array<string, mixed>>> $perGang  dezelfde items, gegroepeerd per gang (lege gangen weggelaten)
+ * @var array<string, array{enkelvoud: string, meervoud: string}> $gangen  voorgerecht, hoofdgerecht, dessert
  * @var array<int, array<string, mixed>> $producten    actieve producten van de handelaar
  * @var array<int, array<string, mixed>> $nietOpKaart  actieve producten die nog niet op de kaart staan
  * @var callable $e
@@ -462,12 +524,21 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                     <button type="submit" class="btn btn-primary wesley1-knop"><?= $e('Assortiment overnemen') ?></button>
                 </form>
             <?php else: ?>
+                <?php $nummer = 0; ?>
+                <?php foreach ($perGang as $gangSleutel => $gangItems): ?>
+                <div class="wesley1-ganggroep">
+                <h3 class="wesley1-gangtitel">
+                    <span><?= $e($gangen[$gangSleutel]['meervoud']) ?></span>
+                    <span class="wesley1-gangtelling"><?= $e(count($gangItems)) ?></span>
+                </h3>
                 <ol class="wesley1-rijen">
-                    <?php foreach ($items as $positie => $item): ?>
+                    <?php foreach ($gangItems as $positie => $item): ?>
                         <?php
                         $itemId = (int) $item['id'];
+                        $nummer++;
+                        // Omhoog/omlaag werkt binnen de gang
                         $isEerste = $positie === 0;
-                        $isLaatste = $positie === $aantalItems - 1;
+                        $isLaatste = $positie === count($gangItems) - 1;
                         ?>
                         <li class="wesley1-rij">
                             <div class="wesley1-rij-hoofd">
@@ -485,7 +556,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                                     <?php endforeach; ?>
                                 </div>
 
-                                <span class="wesley1-nummer"><?= $e($positie + 1) ?></span>
+                                <span class="wesley1-nummer"><?= $e($nummer) ?></span>
 
                                 <div class="wesley1-rij-tekst">
                                     <span class="wesley1-rij-naam"><?= $e($item['naam']) ?></span>
@@ -533,6 +604,14 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                                     <input class="form-control" type="text" name="omschrijving" maxlength="300" value="<?= $e($item['omschrijving']) ?>">
                                 </label>
                                 <label class="wesley1-veld">
+                                    <span><?= $e('Gang') ?></span>
+                                    <select class="form-control" name="gang" required>
+                                        <?php foreach ($gangen as $sleutel => $gangNamen): ?>
+                                            <option value="<?= $e($sleutel) ?>" <?= $e($sleutel === $gangSleutel ? 'selected' : '') ?>><?= $e($gangNamen['enkelvoud']) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </label>
+                                <label class="wesley1-veld">
                                     <span><?= $e('Prijs (€)') ?></span>
                                     <input class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" required
                                            value="<?= $e(number_format((float) $item['prijs'], 2, '.', '')) ?>">
@@ -545,6 +624,8 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                         </li>
                     <?php endforeach; ?>
                 </ol>
+                </div>
+                <?php endforeach; ?>
             <?php endif; ?>
         </section>
 
@@ -569,20 +650,25 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                     <?php if ($items === []): ?>
                         <p class="wesley1-kaart-leeg"><?= $e('De kaart is nog leeg.') ?></p>
                     <?php else: ?>
-                        <ul class="wesley1-kaart-lijst">
-                            <?php foreach ($items as $item): ?>
-                                <li class="wesley1-kaart-item">
-                                    <div class="wesley1-kaart-regel">
-                                        <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
-                                        <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
-                                        <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
-                                    </div>
-                                    <?php if ((string) $item['omschrijving'] !== ''): ?>
-                                        <p class="wesley1-kaart-omschrijving"><?= $e($item['omschrijving']) ?></p>
-                                    <?php endif; ?>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
+                        <?php foreach ($perGang as $gangSleutel => $gangItems): ?>
+                            <section class="wesley1-kaart-gang">
+                                <h4 class="wesley1-kaart-gangtitel"><?= $e($gangen[$gangSleutel]['meervoud']) ?></h4>
+                                <ul class="wesley1-kaart-lijst">
+                                    <?php foreach ($gangItems as $item): ?>
+                                        <li class="wesley1-kaart-item">
+                                            <div class="wesley1-kaart-regel">
+                                                <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
+                                                <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
+                                                <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
+                                            </div>
+                                            <?php if ((string) $item['omschrijving'] !== ''): ?>
+                                                <p class="wesley1-kaart-omschrijving"><?= $e($item['omschrijving']) ?></p>
+                                            <?php endif; ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </section>
+                        <?php endforeach; ?>
                     <?php endif; ?>
 
                     <footer class="wesley1-kaart-voet">
@@ -667,6 +753,14 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                     <label class="wesley1-veld">
                         <span><?= $e('Omschrijving') ?></span>
                         <input class="form-control" type="text" name="omschrijving" maxlength="300" placeholder="<?= $e('Optioneel') ?>">
+                    </label>
+                    <label class="wesley1-veld">
+                        <span><?= $e('Gang') ?></span>
+                        <select class="form-control" name="gang" required>
+                            <?php foreach ($gangen as $sleutel => $gangNamen): ?>
+                                <option value="<?= $e($sleutel) ?>" <?= $e($sleutel === 'hoofdgerecht' ? 'selected' : '') ?>><?= $e($gangNamen['enkelvoud']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </label>
                     <label class="wesley1-veld">
                         <span><?= $e('Prijs (€)') ?></span>

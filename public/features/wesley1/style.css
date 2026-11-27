@@ -416,7 +416,7 @@
 /* Aanpassen-formulier onder een rij */
 .wesley1-bewerk {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 110px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 12px;
     align-items: end;
     margin: 0;
@@ -841,5 +841,73 @@
 
     .wesley1-kop-acties {
         width: 100%;
+    }
+}
+
+/* ======================================================================
+   Gangen: voorgerechten, hoofdgerechten, desserten
+   ====================================================================== */
+/* In het beheer: een titel per gang boven zijn eigen lijst */
+.wesley1-ganggroep + .wesley1-ganggroep {
+    margin-top: 22px;
+}
+
+.wesley1-gangtitel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    color: var(--wesley1-pine);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.wesley1-gangtelling {
+    display: grid;
+    place-items: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--pine-100, #e7f0ed);
+    font-size: 0.72rem;
+    letter-spacing: 0;
+}
+
+/* Op de kaart: een sierlijke titel per gang */
+.wesley1-kaart-gang + .wesley1-kaart-gang {
+    margin-top: 26px;
+}
+
+.wesley1-kaart-gang {
+    break-inside: avoid-page;
+}
+
+.wesley1-kaart-gangtitel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 0 0 14px;
+    color: var(--wesley1-groen);
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-variant: small-caps;
+    letter-spacing: 0.14em;
+    text-align: center;
+}
+
+.wesley1-kaart-gangtitel::before,
+.wesley1-kaart-gangtitel::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--wesley1-goud-licht);
+}
+
+@media print {
+    .wesley1-kaart-gangtitel {
+        font-size: 14pt;
     }
 }
