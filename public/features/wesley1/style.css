@@ -8,3 +8,26 @@
     color: var(--ink-600);
     margin: 0;
 }
+
+/* Beheer: formulieren onder elkaar */
+.wesley1-beheer {
+    display: grid;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.wesley1-blok {
+    display: grid;
+    gap: 8px;
+    padding: 20px;
+}
+
+.wesley1-blok h2 {
+    margin: 0 0 4px;
+    font-size: 1.15rem;
+}
+
+.wesley1-blok .btn {
+    justify-self: start;
+    margin-top: 4px;
+}
