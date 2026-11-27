@@ -1,140 +1,502 @@
 /* Stijlen voor de feature van wesley1 (feestelijke menukaart). Elke klasse begint met .wesley1- */
 
+/* ======================================================================
+   Basis
+   ====================================================================== */
+.wesley1-app {
+    --wesley1-rand: var(--border, #e3ded4);
+    --wesley1-zacht: var(--cream-50, #faf8f4);
+    --wesley1-pine: var(--pine-900, #14332b);
+    --wesley1-goud-app: var(--gold-500, #c88a2e);
+    --wesley1-tekst: var(--ink-900, #182220);
+    --wesley1-tekst-zacht: var(--ink-600, #4c5b57);
+    --wesley1-tekst-vaag: var(--ink-400, #7c8b87);
+    --wesley1-radius: var(--radius-lg, 18px);
+
+    display: grid;
+    gap: 28px;
+    color: var(--wesley1-tekst);
+}
+
+.wesley1-app svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+/* ======================================================================
+   Kopbalk
+   ====================================================================== */
 .wesley1-kop {
-    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 28px 32px;
+    border-radius: var(--wesley1-radius);
+    background:
+        radial-gradient(circle at 92% 0%, rgba(200, 138, 46, 0.28), transparent 45%),
+        linear-gradient(135deg, var(--pine-950, #0c211b), var(--pine-800, #1d473c));
+    color: #fff;
+    box-shadow: var(--shadow-md, 0 12px 32px rgba(20, 51, 43, 0.08));
+}
+
+.wesley1-kop-tekst {
+    max-width: 560px;
+}
+
+.wesley1-eyebrow {
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--gold-100, #fbf3e4);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.wesley1-kop h1 {
+    margin: 0 0 6px;
+    color: #fff;
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    line-height: 1.15;
 }
 
 .wesley1-kop p {
-    color: var(--ink-600);
     margin: 0;
+    color: rgba(255, 255, 255, 0.78);
 }
 
-/* ---------- Beheer ---------- */
-.wesley1-beheer {
-    display: grid;
-    gap: 20px;
-    margin-bottom: 32px;
+.wesley1-kop-acties {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
-.wesley1-blok {
-    display: grid;
-    gap: 8px;
-    padding: 20px;
-}
-
-.wesley1-blok h2 {
-    margin: 0 0 4px;
-    font-size: 1.15rem;
-}
-
-.wesley1-blok p {
-    margin: 0;
-    color: var(--ink-600);
-}
-
-.wesley1-blok > .btn {
-    justify-self: start;
-    margin-top: 4px;
-}
-
-.wesley1-toevoegen {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    align-items: start;
-}
-
-/* Lijst van items op de kaart */
-.wesley1-itemlijst {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
+.wesley1-cijfers {
+    display: flex;
     gap: 10px;
 }
 
-.wesley1-item {
+.wesley1-cijfer {
     display: grid;
-    gap: 8px;
-    padding: 12px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    min-width: 108px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--radius-md, 12px);
+    background: rgba(255, 255, 255, 0.06);
 }
 
-.wesley1-item-form {
-    display: grid;
-    grid-template-columns: minmax(160px, 1.2fr) minmax(180px, 2fr) 110px auto;
+.wesley1-cijfer strong {
+    font-size: 1.4rem;
+    line-height: 1.1;
+    color: #fff;
+}
+
+.wesley1-cijfer span {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.wesley1-knop-icoon {
+    display: inline-flex;
+    align-items: center;
     gap: 8px;
-    align-items: end;
+}
+
+/* ======================================================================
+   Werkblad: lijst links, zijbalk rechts
+   ====================================================================== */
+.wesley1-werkblad {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 24px;
+    align-items: start;
+}
+
+.wesley1-zijbalk {
+    display: grid;
+    gap: 20px;
+    position: sticky;
+    top: calc(var(--header-offset, 92px) + 8px);
+}
+
+.wesley1-paneel {
+    margin: 0;
+    padding: 22px;
+    border: 1px solid var(--wesley1-rand);
+    border-radius: var(--wesley1-radius);
+    background: var(--surface, #fff);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(20, 51, 43, 0.06));
+}
+
+.wesley1-paneel-kop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.wesley1-paneel-kop h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.wesley1-paneel-kop p {
+    margin: 2px 0 0;
+    font-size: 0.85rem;
+    color: var(--wesley1-tekst-zacht);
+}
+
+.wesley1-paneel-kop form {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* Formuliervelden */
+.wesley1-velden {
+    display: grid;
+    gap: 14px;
+    margin: 0;
 }
 
 .wesley1-veld {
     display: grid;
-    gap: 2px;
-    margin: 0;
-}
-
-.wesley1-veld span {
-    font-size: 0.8rem;
-    color: var(--ink-600);
-}
-
-.wesley1-item-acties {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.wesley1-item-bron {
-    font-size: 0.8rem;
-    color: var(--ink-600);
-}
-
-.wesley1-item-acties form {
-    margin: 0;
-}
-
-.wesley1-verwijder {
-    color: #a12c2c;
-}
-
-@media (max-width: 720px) {
-    .wesley1-item-form {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Volgorde: nummer en knoppen omhoog/omlaag */
-.wesley1-volgorde {
-    display: flex;
-    align-items: center;
     gap: 6px;
+    margin: 0;
 }
 
-.wesley1-volgorde form {
+.wesley1-veld > span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--wesley1-tekst-zacht);
+}
+
+.wesley1-vol {
+    width: 100%;
+    justify-content: center;
+}
+
+.wesley1-hint {
     margin: 0;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm, 8px);
+    background: var(--wesley1-zacht);
+    font-size: 0.85rem;
+    color: var(--wesley1-tekst-zacht);
+}
+
+/* Tabbladen in het paneel "Toevoegen" */
+.wesley1-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-bottom: 16px;
+    padding: 4px;
+    border-radius: var(--radius-md, 12px);
+    background: var(--cream-100, #f3efe7);
+}
+
+.wesley1-tab {
+    padding: 8px 10px;
+    border: 0;
+    border-radius: var(--radius-sm, 8px);
+    background: transparent;
+    color: var(--wesley1-tekst-zacht);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wesley1-tab[aria-selected="true"] {
+    background: var(--surface, #fff);
+    color: var(--wesley1-pine);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(20, 51, 43, 0.06));
+}
+
+.wesley1-tab:focus-visible {
+    outline: 2px solid var(--wesley1-goud-app);
+    outline-offset: 2px;
+}
+
+/* Zonder JavaScript zijn beide formulieren zichtbaar; met JavaScript enkel het gekozen tabblad */
+.wesley1-js .wesley1-tabpaneel[hidden] {
+    display: none;
+}
+
+.wesley1-tabpaneel + .wesley1-tabpaneel {
+    margin-top: 20px;
+}
+
+.wesley1-js .wesley1-tabpaneel + .wesley1-tabpaneel {
+    margin-top: 0;
+}
+
+/* ======================================================================
+   Lijst met items op de kaart
+   ====================================================================== */
+.wesley1-rijen {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--wesley1-rand);
+    border-radius: var(--radius-md, 12px);
+    overflow: hidden;
+}
+
+.wesley1-rij + .wesley1-rij {
+    border-top: 1px solid var(--wesley1-rand);
+}
+
+.wesley1-rij-hoofd {
+    display: grid;
+    grid-template-columns: auto 28px minmax(0, 1fr) auto auto auto;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    transition: background 0.15s ease;
+}
+
+.wesley1-rij:hover .wesley1-rij-hoofd {
+    background: var(--wesley1-zacht);
+}
+
+.wesley1-volgorde {
+    display: grid;
+    gap: 2px;
+}
+
+.wesley1-volgorde form,
+.wesley1-rij-acties form {
+    margin: 0;
+}
+
+.wesley1-volgorde .wesley1-icoonknop {
+    width: 26px;
+    height: 20px;
+}
+
+.wesley1-volgorde .wesley1-icoonknop svg {
+    width: 14px;
+    height: 14px;
 }
 
 .wesley1-nummer {
-    min-width: 28px;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--pine-100, #e7f0ed);
+    color: var(--wesley1-pine);
+    font-size: 0.8rem;
     font-weight: 700;
-    color: var(--ink-600);
 }
 
-.wesley1-pijl {
-    min-width: 36px;
-    padding-left: 0;
-    padding-right: 0;
+.wesley1-rij-tekst {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
 }
 
-.wesley1-pijl:disabled {
-    opacity: 0.35;
+/* Volledige naam tonen, hoogstens twee regels */
+.wesley1-rij-naam {
+    font-weight: 600;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+.wesley1-rij-omschrijving {
+    font-size: 0.85rem;
+    color: var(--wesley1-tekst-zacht);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wesley1-label {
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.wesley1-label-assortiment {
+    background: var(--pine-100, #e7f0ed);
+    color: var(--pine-800, #1d473c);
+}
+
+.wesley1-label-eigen {
+    background: var(--gold-100, #fbf3e4);
+    color: var(--gold-600, #b2771f);
+}
+
+.wesley1-rij-prijs {
+    min-width: 76px;
+    text-align: right;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.wesley1-rij-acties {
+    display: flex;
+    gap: 4px;
+}
+
+/* Kleine knoppen met enkel een icoon */
+.wesley1-icoonknop {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm, 8px);
+    background: transparent;
+    color: var(--wesley1-tekst-zacht);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.wesley1-icoonknop:hover:not(:disabled),
+.wesley1-icoonknop[aria-expanded="true"] {
+    border-color: var(--wesley1-rand);
+    background: var(--surface, #fff);
+    color: var(--wesley1-pine);
+}
+
+.wesley1-icoonknop-gevaar:hover:not(:disabled) {
+    border-color: var(--danger-bg, #fdecec);
+    background: var(--danger-bg, #fdecec);
+    color: var(--danger-ink, #9c2424);
+}
+
+.wesley1-icoonknop:disabled {
+    opacity: 0.25;
     cursor: default;
 }
 
-/* ---------- Voorbeeld van de kaart: feestelijke stijl ---------- */
+.wesley1-icoonknop:focus-visible {
+    outline: 2px solid var(--wesley1-goud-app);
+    outline-offset: 1px;
+}
+
+/* Aanpassen-formulier onder een rij */
+.wesley1-bewerk {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 110px;
+    gap: 12px;
+    align-items: end;
+    margin: 0;
+    padding: 4px 14px 16px 96px;
+    background: var(--wesley1-zacht);
+}
+
+.wesley1-js .wesley1-bewerk[hidden] {
+    display: none;
+}
+
+.wesley1-bewerk-knoppen {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+/* ======================================================================
+   Lege toestanden
+   ====================================================================== */
+.wesley1-leeg {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 40px 24px;
+    border: 2px dashed var(--wesley1-rand);
+    border-radius: var(--radius-md, 12px);
+    background: var(--wesley1-zacht);
+    text-align: center;
+}
+
+.wesley1-leeg-start {
+    border-color: var(--wesley1-goud-app);
+    background: linear-gradient(180deg, var(--gold-100, #fbf3e4), var(--surface, #fff));
+}
+
+.wesley1-leeg-icoon {
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--surface, #fff);
+    color: var(--wesley1-goud-app);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(20, 51, 43, 0.06));
+}
+
+.wesley1-leeg-icoon svg {
+    width: 26px;
+    height: 26px;
+}
+
+.wesley1-leeg h3 {
+    margin: 4px 0 0;
+    font-size: 1.15rem;
+}
+
+.wesley1-leeg p {
+    max-width: 440px;
+    margin: 0 0 6px;
+    color: var(--wesley1-tekst-zacht);
+}
+
+/* ======================================================================
+   Voorbeeld van de kaart
+   ====================================================================== */
+.wesley1-podium {
+    padding: 28px 24px 40px;
+    border-radius: var(--wesley1-radius);
+    background:
+        radial-gradient(circle at 50% 0%, rgba(200, 138, 46, 0.12), transparent 60%),
+        var(--cream-100, #f3efe7);
+}
+
+.wesley1-podium-kop {
+    margin-bottom: 22px;
+    text-align: center;
+}
+
+.wesley1-podium-kop h2 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.wesley1-podium-kop p {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: var(--wesley1-tekst-zacht);
+}
+
+/* ---------- De kaart zelf: feestelijke stijl ---------- */
 .wesley1-kaart {
     --wesley1-rood: #8e1b22;
     --wesley1-groen: #1f4a33;
@@ -144,7 +506,7 @@
     --wesley1-inkt: #2c2118;
 
     max-width: 720px;
-    margin: 0 auto 40px;
+    margin: 0 auto;
     padding: 14px;
     background:
         radial-gradient(circle at 0 0, var(--wesley1-rood) 0 22px, transparent 23px),
@@ -154,7 +516,7 @@
         var(--wesley1-papier);
     border: 3px solid var(--wesley1-goud);
     border-radius: 6px;
-    box-shadow: 0 10px 30px rgba(60, 30, 10, 0.18);
+    box-shadow: 0 18px 40px rgba(60, 30, 10, 0.18);
     color: var(--wesley1-inkt);
     font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
 }
@@ -294,12 +656,50 @@
     font-size: 1.1rem;
 }
 
-.wesley1-voorbeeld-titel {
-    margin: 0 0 16px;
-    font-size: 1.15rem;
+/* ======================================================================
+   Kleinere schermen
+   ====================================================================== */
+@media (max-width: 1000px) {
+    .wesley1-werkblad {
+        grid-template-columns: 1fr;
+    }
+
+    .wesley1-zijbalk {
+        position: static;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 680px) {
+    .wesley1-kop {
+        padding: 22px 20px;
+    }
+
+    .wesley1-rij-hoofd {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 4px 10px;
+    }
+
+    .wesley1-nummer,
+    .wesley1-label {
+        display: none;
+    }
+
+    .wesley1-rij-prijs {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .wesley1-rij-acties {
+        grid-column: 2 / -1;
+        justify-content: flex-end;
+    }
+
+    .wesley1-bewerk {
+        grid-template-columns: 1fr;
+        padding: 4px 14px 16px;
+    }
+
     .wesley1-kaart-binnen {
         padding: 28px 18px 22px;
     }
@@ -309,38 +709,29 @@
     }
 }
 
-/* Balk boven het voorbeeld met de afdrukknop */
-.wesley1-voorbeeld-balk {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-}
-
-.wesley1-voorbeeld-balk .wesley1-voorbeeld-titel {
-    margin: 0;
-}
-
-/* ---------- Afdrukken: enkel de kaart, op A4 ---------- */
+/* ======================================================================
+   Afdrukken: enkel de kaart, op A4
+   ====================================================================== */
 @page {
     size: A4 portrait;
     margin: 12mm;
 }
 
 @media print {
-    /* Header, menu, footer, meldingen, formulieren en knoppen hebben .no-print */
+    /* Header, menu, footer, meldingen, beheer en knoppen hebben .no-print */
     .no-print {
         display: none !important;
     }
 
     .wesley1-pagina,
-    .wesley1-pagina .container {
+    .wesley1-pagina .container,
+    .wesley1-app,
+    .wesley1-podium {
         padding: 0 !important;
         margin: 0 !important;
         max-width: none !important;
         width: auto !important;
+        background: none !important;
     }
 
     /* Kleuren en achtergronden van de kaart mee afdrukken */
@@ -372,23 +763,4 @@
     .wesley1-kaart-prijs {
         font-size: 11pt;
     }
-}
-
-/* ---------- Lege toestanden ---------- */
-.wesley1-leeg {
-    border-left: 4px solid var(--gold-500, #c88a2e);
-}
-
-/* Lege kaart, wel producten: "Assortiment overnemen" valt meteen op */
-.wesley1-uitgelicht {
-    border: 2px solid var(--gold-500, #c88a2e);
-    background: linear-gradient(135deg, var(--gold-100, #fbf3e4), #ffffff);
-}
-
-.wesley1-uitgelicht h2 {
-    font-size: 1.3rem;
-}
-
-.wesley1-leeg > .btn {
-    justify-self: start;
 }

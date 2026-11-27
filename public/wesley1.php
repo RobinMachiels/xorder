@@ -385,184 +385,304 @@ if (!isset($wesley1Sjabloon)) {
 // Prijs in euro zoals op een menukaart: € 12,50
 $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $bedrag, 2, ',', '.');
 ?>
+<?php
+// Kleine hulpjes voor het sjabloon
+$aantalItems = count($items);
+$aantalNieuw = count($nietOpKaart);
+$geenProducten = $producten === [];
+// Standaard tabblad bij "Toevoegen": uit assortiment als er nog producten over zijn, anders eigen gerecht
+$standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
+?>
 <link rel="stylesheet" href="<?= $e($asset('style.css')) ?>">
 
-<div class="wesley1-kop no-print">
-    <h1><?= $e('Feestelijke menukaart') ?></h1>
-    <p><?= $e('Stel een feestmenu samen op basis van je assortiment en druk het af voor je klanten.') ?></p>
-</div>
+<div class="wesley1-app">
 
-<div class="wesley1-beheer no-print">
-    <?php if ($producten === [] && $items === []): ?>
-        <div class="card wesley1-blok wesley1-leeg">
-            <h2><?= $e('Voeg eerst producten toe') ?></h2>
-            <p><?= $e('Je hebt nog geen actieve producten in je assortiment. Voeg ze toe op de productpagina, dan kun je ze hier met één klik op de kaart zetten. Een eigen gerecht toevoegen kan wel al meteen.') ?></p>
-            <a class="btn btn-primary" href="<?= $e($url('/app/products')) ?>"><?= $e('Naar mijn producten') ?></a>
+    <!-- Kopbalk -->
+    <header class="wesley1-kop no-print">
+        <div class="wesley1-kop-tekst">
+            <span class="wesley1-eyebrow"><?= $e('Feestdagen') ?></span>
+            <h1><?= $e('Feestelijke menukaart') ?></h1>
+            <p><?= $e('Stel een feestmenu samen op basis van je assortiment en druk het af voor je klanten.') ?></p>
         </div>
-    <?php endif; ?>
-
-    <?php if ($nietOpKaart !== []): ?>
-        <form method="post" action="<?= $e($paginaUrl) ?>"
-              class="card wesley1-blok wesley1-overnemen<?= $e($items === [] ? ' wesley1-uitgelicht' : '') ?>">
-            <?= $csrfField() ?>
-            <input type="hidden" name="actie" value="overnemen">
-            <h2><?= $e($items === [] ? 'Begin met je assortiment' : 'Assortiment overnemen') ?></h2>
-            <?php if ($items === []): ?>
-                <p><?= $e('Je kaart is nog leeg. Zet al je actieve producten in één keer op de kaart; daarna pas je namen, omschrijvingen, prijzen en volgorde aan. Je echte assortiment blijft ongewijzigd.') ?></p>
+        <div class="wesley1-kop-acties">
+            <div class="wesley1-cijfers">
+                <div class="wesley1-cijfer">
+                    <strong><?= $e($aantalItems) ?></strong>
+                    <span><?= $e($aantalItems === 1 ? 'item op de kaart' : 'items op de kaart') ?></span>
+                </div>
+                <div class="wesley1-cijfer">
+                    <strong><?= $e($aantalNieuw) ?></strong>
+                    <span><?= $e('nog niet op de kaart') ?></span>
+                </div>
+            </div>
+            <?php if ($items !== []): ?>
+                <button type="button" class="btn btn-gold wesley1-knop-icoon" id="wesley1-afdrukken">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z"/></svg>
+                    <?= $e('Afdrukken') ?>
+                </button>
             <?php endif; ?>
-            <p><?= $e(count($nietOpKaart) === 1
-                ? '1 actief product uit je assortiment staat nog niet op de kaart.'
-                : count($nietOpKaart) . ' actieve producten uit je assortiment staan nog niet op de kaart.') ?></p>
-            <button type="submit" class="btn btn-primary"><?= $e('Assortiment overnemen') ?></button>
-        </form>
-    <?php endif; ?>
+        </div>
+    </header>
 
-    <form method="post" action="<?= $e($paginaUrl) ?>" class="card wesley1-blok wesley1-instellingen">
-        <?= $csrfField() ?>
-        <input type="hidden" name="actie" value="instellingen">
-        <h2><?= $e('Instellingen van de kaart') ?></h2>
-        <label class="form-label" for="wesley1-titel"><?= $e('Titel') ?></label>
-        <input id="wesley1-titel" class="form-control" type="text" name="titel" maxlength="120" required
-               value="<?= $e($menu['titel']) ?>" placeholder="<?= $e('Feestmenu Kerst & Nieuwjaar') ?>">
-        <label class="form-label" for="wesley1-ondertitel"><?= $e('Ondertitel') ?></label>
-        <input id="wesley1-ondertitel" class="form-control" type="text" name="ondertitel" maxlength="200"
-               value="<?= $e($menu['ondertitel']) ?>" placeholder="<?= $e('Bestel tijdig voor de feestdagen') ?>">
-        <button type="submit" class="btn btn-primary"><?= $e('Bewaar') ?></button>
-    </form>
+    <div class="wesley1-werkblad no-print">
 
-    <div class="wesley1-toevoegen">
-        <?php if ($nietOpKaart !== []): ?>
-            <form method="post" action="<?= $e($paginaUrl) ?>" class="card wesley1-blok">
-                <?= $csrfField() ?>
-                <input type="hidden" name="actie" value="toevoegen_product">
-                <h2><?= $e('Product uit assortiment toevoegen') ?></h2>
-                <label class="form-label" for="wesley1-product"><?= $e('Product') ?></label>
-                <select id="wesley1-product" class="form-control" name="product_id" required>
-                    <option value=""><?= $e('Kies een product') ?></option>
-                    <?php foreach ($nietOpKaart as $product): ?>
-                        <option value="<?= $e($product['id']) ?>">
-                            <?= $e($product['name'] . ' (' . $prijs($product['price']) . ')') ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <button type="submit" class="btn btn-primary"><?= $e('Toevoegen') ?></button>
-            </form>
-        <?php endif; ?>
+        <!-- Linkerkolom: de kaart beheren -->
+        <section class="wesley1-paneel wesley1-lijstpaneel" aria-labelledby="wesley1-lijst-titel">
+            <div class="wesley1-paneel-kop">
+                <div>
+                    <h2 id="wesley1-lijst-titel"><?= $e('Op de kaart') ?></h2>
+                    <p><?= $e('Pas aan wat je klanten zien. Je echte assortiment blijft altijd ongewijzigd.') ?></p>
+                </div>
+                <?php if ($items !== [] && $aantalNieuw > 0): ?>
+                    <form method="post" action="<?= $e($paginaUrl) ?>">
+                        <?= $csrfField() ?>
+                        <input type="hidden" name="actie" value="overnemen">
+                        <button type="submit" class="btn btn-outline btn-sm">
+                            <?= $e('Assortiment overnemen (' . $aantalNieuw . ')') ?>
+                        </button>
+                    </form>
+                <?php endif; ?>
+            </div>
 
-        <form method="post" action="<?= $e($paginaUrl) ?>" class="card wesley1-blok">
-            <?= $csrfField() ?>
-            <input type="hidden" name="actie" value="toevoegen_eigen">
-            <h2><?= $e('Eigen gerecht toevoegen') ?></h2>
-            <label class="form-label" for="wesley1-eigen-naam"><?= $e('Naam') ?></label>
-            <input id="wesley1-eigen-naam" class="form-control" type="text" name="naam" maxlength="160" required>
-            <label class="form-label" for="wesley1-eigen-omschrijving"><?= $e('Omschrijving') ?></label>
-            <input id="wesley1-eigen-omschrijving" class="form-control" type="text" name="omschrijving" maxlength="300">
-            <label class="form-label" for="wesley1-eigen-prijs"><?= $e('Prijs (€)') ?></label>
-            <input id="wesley1-eigen-prijs" class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" value="0.00" required>
-            <button type="submit" class="btn btn-primary"><?= $e('Toevoegen') ?></button>
-        </form>
-    </div>
+            <?php if ($items === [] && $geenProducten): ?>
+                <!-- Lege toestand: geen producten en niets op de kaart -->
+                <div class="wesley1-leeg">
+                    <div class="wesley1-leeg-icoon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4zM3 7v10l9 4 9-4V7M12 11v10"/></svg>
+                    </div>
+                    <h3><?= $e('Voeg eerst producten toe') ?></h3>
+                    <p><?= $e('Je hebt nog geen actieve producten in je assortiment. Voeg ze toe op de productpagina, dan zet je ze hier met één klik op de kaart. Een eigen gerecht toevoegen kan nu al, via het paneel rechts.') ?></p>
+                    <a class="btn btn-primary" href="<?= $e($url('/app/products')) ?>"><?= $e('Naar mijn producten') ?></a>
+                </div>
+            <?php elseif ($items === []): ?>
+                <!-- Lege toestand: wel producten, maar de kaart is nog leeg -->
+                <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-leeg wesley1-leeg-start">
+                    <?= $csrfField() ?>
+                    <input type="hidden" name="actie" value="overnemen">
+                    <div class="wesley1-leeg-icoon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>
+                    </div>
+                    <h3><?= $e('Begin met je assortiment') ?></h3>
+                    <p><?= $e($aantalNieuw === 1
+                        ? 'Zet je actieve product in één klik op de kaart. Daarna pas je naam, omschrijving, prijs en volgorde aan.'
+                        : 'Zet je ' . $aantalNieuw . ' actieve producten in één klik op de kaart. Daarna pas je namen, omschrijvingen, prijzen en volgorde aan.') ?></p>
+                    <button type="submit" class="btn btn-primary"><?= $e('Assortiment overnemen') ?></button>
+                </form>
+            <?php else: ?>
+                <ol class="wesley1-rijen">
+                    <?php foreach ($items as $positie => $item): ?>
+                        <?php
+                        $itemId = (int) $item['id'];
+                        $isEerste = $positie === 0;
+                        $isLaatste = $positie === $aantalItems - 1;
+                        ?>
+                        <li class="wesley1-rij">
+                            <div class="wesley1-rij-hoofd">
+                                <div class="wesley1-volgorde">
+                                    <?php foreach (['omhoog' => ['Omhoog', $isEerste, 'M6 15l6-6 6 6'], 'omlaag' => ['Omlaag', $isLaatste, 'M6 9l6 6 6-6']] as $richting => [$label, $kanNiet, $pad]): ?>
+                                        <form method="post" action="<?= $e($paginaUrl) ?>">
+                                            <?= $csrfField() ?>
+                                            <input type="hidden" name="actie" value="<?= $e($richting) ?>">
+                                            <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
+                                            <button type="submit" class="wesley1-icoonknop" title="<?= $e($label) ?>"
+                                                    aria-label="<?= $e($label . ': ' . $item['naam']) ?>" <?= $e($kanNiet ? 'disabled' : '') ?>>
+                                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="<?= $e($pad) ?>"/></svg>
+                                            </button>
+                                        </form>
+                                    <?php endforeach; ?>
+                                </div>
 
-    <div class="card wesley1-blok wesley1-items">
-        <h2><?= $e('Op de kaart') ?></h2>
-        <?php if ($items === []): ?>
-            <p><?= $e('Nog niets op de kaart. Neem je assortiment over of voeg een eigen gerecht toe.') ?></p>
-        <?php else: ?>
-            <ul class="wesley1-itemlijst">
-                <?php foreach ($items as $positie => $item): ?>
-                    <?php $itemId = (int) $item['id']; ?>
-                    <li class="wesley1-item">
-                        <div class="wesley1-volgorde">
-                            <span class="wesley1-nummer"><?= $e($positie + 1) ?></span>
-                            <?php foreach (['omhoog' => ['↑', 'Omhoog', $positie === 0], 'omlaag' => ['↓', 'Omlaag', $positie === count($items) - 1]] as $richting => [$pijl, $label, $kanNiet]): ?>
-                                <form method="post" action="<?= $e($paginaUrl) ?>">
-                                    <?= $csrfField() ?>
-                                    <input type="hidden" name="actie" value="<?= $e($richting) ?>">
-                                    <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
-                                    <button type="submit" class="btn btn-outline btn-sm wesley1-pijl"
-                                            title="<?= $e($label) ?>" aria-label="<?= $e($label . ': ' . $item['naam']) ?>"
-                                            <?= $kanNiet ? 'disabled' : '' ?>><?= $e($pijl) ?></button>
-                                </form>
-                            <?php endforeach; ?>
-                        </div>
-                        <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-item-form">
-                            <?= $csrfField() ?>
-                            <input type="hidden" name="actie" value="aanpassen">
-                            <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
-                            <label class="wesley1-veld">
-                                <span><?= $e('Naam') ?></span>
-                                <input class="form-control" type="text" name="naam" maxlength="160" required value="<?= $e($item['naam']) ?>">
-                            </label>
-                            <label class="wesley1-veld wesley1-veld-breed">
-                                <span><?= $e('Omschrijving') ?></span>
-                                <input class="form-control" type="text" name="omschrijving" maxlength="300" value="<?= $e($item['omschrijving']) ?>">
-                            </label>
-                            <label class="wesley1-veld wesley1-veld-prijs">
-                                <span><?= $e('Prijs (€)') ?></span>
-                                <input class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" required
-                                       value="<?= $e(number_format((float) $item['prijs'], 2, '.', '')) ?>">
-                            </label>
-                            <button type="submit" class="btn btn-outline btn-sm"><?= $e('Bewaar') ?></button>
-                        </form>
-                        <div class="wesley1-item-acties">
-                            <span class="wesley1-item-bron"><?= $e($item['product_id'] !== null ? 'Uit assortiment' : 'Eigen gerecht') ?></span>
-                            <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-verwijder-form"
-                                  data-wesley1-bevestig="<?= $e('"' . $item['naam'] . '" van de kaart verwijderen? Je assortiment blijft ongewijzigd.') ?>">
+                                <span class="wesley1-nummer"><?= $e($positie + 1) ?></span>
+
+                                <div class="wesley1-rij-tekst">
+                                    <span class="wesley1-rij-naam"><?= $e($item['naam']) ?></span>
+                                    <?php if ((string) $item['omschrijving'] !== ''): ?>
+                                        <span class="wesley1-rij-omschrijving"><?= $e($item['omschrijving']) ?></span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <span class="wesley1-label <?= $e($item['product_id'] !== null ? 'wesley1-label-assortiment' : 'wesley1-label-eigen') ?>">
+                                    <?= $e($item['product_id'] !== null ? 'Assortiment' : 'Eigen gerecht') ?>
+                                </span>
+
+                                <span class="wesley1-rij-prijs"><?= $e($prijs($item['prijs'])) ?></span>
+
+                                <div class="wesley1-rij-acties">
+                                    <button type="button" class="wesley1-icoonknop" data-wesley1-bewerk="wesley1-bewerk-<?= $e($itemId) ?>"
+                                            aria-expanded="false" aria-controls="wesley1-bewerk-<?= $e($itemId) ?>"
+                                            title="<?= $e('Aanpassen') ?>" aria-label="<?= $e('Aanpassen: ' . $item['naam']) ?>">
+                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></svg>
+                                    </button>
+                                    <form method="post" action="<?= $e($paginaUrl) ?>"
+                                          data-wesley1-bevestig="<?= $e('"' . $item['naam'] . '" van de kaart verwijderen? Je assortiment blijft ongewijzigd.') ?>">
+                                        <?= $csrfField() ?>
+                                        <input type="hidden" name="actie" value="verwijderen">
+                                        <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
+                                        <button type="submit" class="wesley1-icoonknop wesley1-icoonknop-gevaar"
+                                                title="<?= $e('Verwijderen') ?>" aria-label="<?= $e('Verwijderen: ' . $item['naam']) ?>">
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Aanpassen: klapt open via de potloodknop (app.js). Zonder JavaScript blijft het zichtbaar. -->
+                            <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-bewerk" id="wesley1-bewerk-<?= $e($itemId) ?>">
                                 <?= $csrfField() ?>
-                                <input type="hidden" name="actie" value="verwijderen">
+                                <input type="hidden" name="actie" value="aanpassen">
                                 <input type="hidden" name="item_id" value="<?= $e($itemId) ?>">
-                                <button type="submit" class="btn btn-outline btn-sm wesley1-verwijder"><?= $e('Verwijder') ?></button>
+                                <label class="wesley1-veld">
+                                    <span><?= $e('Naam') ?></span>
+                                    <input class="form-control" type="text" name="naam" maxlength="160" required value="<?= $e($item['naam']) ?>">
+                                </label>
+                                <label class="wesley1-veld">
+                                    <span><?= $e('Omschrijving') ?></span>
+                                    <input class="form-control" type="text" name="omschrijving" maxlength="300" value="<?= $e($item['omschrijving']) ?>">
+                                </label>
+                                <label class="wesley1-veld">
+                                    <span><?= $e('Prijs (€)') ?></span>
+                                    <input class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" required
+                                           value="<?= $e(number_format((float) $item['prijs'], 2, '.', '')) ?>">
+                                </label>
+                                <div class="wesley1-bewerk-knoppen">
+                                    <button type="button" class="btn btn-outline btn-sm" data-wesley1-sluit="wesley1-bewerk-<?= $e($itemId) ?>"><?= $e('Annuleren') ?></button>
+                                    <button type="submit" class="btn btn-primary btn-sm"><?= $e('Bewaar') ?></button>
+                                </div>
                             </form>
-                        </div>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-    </div>
-</div>
-
-<div class="wesley1-voorbeeld-balk no-print">
-    <h2 class="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
-    <?php if ($items !== []): ?>
-        <button type="button" class="btn btn-gold" id="wesley1-afdrukken"><?= $e('Afdrukken') ?></button>
-    <?php endif; ?>
-</div>
-
-<article class="wesley1-kaart" aria-label="<?= $e('Menukaart') ?>">
-    <div class="wesley1-kaart-binnen">
-        <header class="wesley1-kaart-kop">
-            <p class="wesley1-kaart-ster" aria-hidden="true"><?= $e('✦ ✦ ✦') ?></p>
-            <h3 class="wesley1-kaart-titel"><?= $e($menu['titel']) ?></h3>
-            <?php if ($menu['ondertitel'] !== ''): ?>
-                <p class="wesley1-kaart-ondertitel"><?= $e($menu['ondertitel']) ?></p>
+                        </li>
+                    <?php endforeach; ?>
+                </ol>
             <?php endif; ?>
-            <div class="wesley1-kaart-sier" aria-hidden="true"></div>
-        </header>
+        </section>
 
-        <?php if ($items === []): ?>
-            <p class="wesley1-kaart-leeg"><?= $e('De kaart is nog leeg.') ?></p>
-        <?php else: ?>
-            <ul class="wesley1-kaart-lijst">
-                <?php foreach ($items as $item): ?>
-                    <li class="wesley1-kaart-item">
-                        <div class="wesley1-kaart-regel">
-                            <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
-                            <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
-                            <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
-                        </div>
-                        <?php if ((string) $item['omschrijving'] !== ''): ?>
-                            <p class="wesley1-kaart-omschrijving"><?= $e($item['omschrijving']) ?></p>
-                        <?php endif; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
+        <!-- Rechterkolom: instellingen en toevoegen -->
+        <aside class="wesley1-zijbalk">
+            <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-paneel">
+                <?= $csrfField() ?>
+                <input type="hidden" name="actie" value="instellingen">
+                <div class="wesley1-paneel-kop">
+                    <div>
+                        <h2><?= $e('Kaart') ?></h2>
+                        <p><?= $e('Bovenaan de afgedrukte kaart.') ?></p>
+                    </div>
+                </div>
+                <div class="wesley1-velden">
+                    <label class="wesley1-veld">
+                        <span><?= $e('Titel') ?></span>
+                        <input class="form-control" type="text" name="titel" maxlength="120" required
+                               value="<?= $e($menu['titel']) ?>" placeholder="<?= $e('Feestmenu Kerst & Nieuwjaar') ?>">
+                    </label>
+                    <label class="wesley1-veld">
+                        <span><?= $e('Ondertitel') ?></span>
+                        <input class="form-control" type="text" name="ondertitel" maxlength="200"
+                               value="<?= $e($menu['ondertitel']) ?>" placeholder="<?= $e('Bestel tijdig voor de feestdagen') ?>">
+                    </label>
+                    <button type="submit" class="btn btn-primary wesley1-vol"><?= $e('Bewaar') ?></button>
+                </div>
+            </form>
 
-        <footer class="wesley1-kaart-voet">
-            <div class="wesley1-kaart-sier" aria-hidden="true"></div>
-            <p><?= $e('Prettige feestdagen!') ?></p>
-        </footer>
+            <div class="wesley1-paneel">
+                <div class="wesley1-paneel-kop">
+                    <div>
+                        <h2><?= $e('Toevoegen') ?></h2>
+                        <p><?= $e('Komt onderaan de kaart.') ?></p>
+                    </div>
+                </div>
+
+                <?php if ($aantalNieuw > 0): ?>
+                    <div class="wesley1-tabs" role="tablist" aria-label="<?= $e('Soort item') ?>">
+                        <button type="button" role="tab" class="wesley1-tab" data-wesley1-tab="assortiment"
+                                aria-selected="<?= $e($standaardTab === 'assortiment' ? 'true' : 'false') ?>"><?= $e('Uit assortiment') ?></button>
+                        <button type="button" role="tab" class="wesley1-tab" data-wesley1-tab="eigen"
+                                aria-selected="<?= $e($standaardTab === 'eigen' ? 'true' : 'false') ?>"><?= $e('Eigen gerecht') ?></button>
+                    </div>
+
+                    <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-velden wesley1-tabpaneel" data-wesley1-paneel="assortiment" role="tabpanel">
+                        <?= $csrfField() ?>
+                        <input type="hidden" name="actie" value="toevoegen_product">
+                        <label class="wesley1-veld">
+                            <span><?= $e('Product') ?></span>
+                            <select class="form-control" name="product_id" required>
+                                <option value=""><?= $e('Kies een product') ?></option>
+                                <?php foreach ($nietOpKaart as $product): ?>
+                                    <option value="<?= $e($product['id']) ?>"><?= $e($product['name'] . ' · ' . $prijs($product['price'])) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                        <button type="submit" class="btn btn-primary wesley1-vol"><?= $e('Op de kaart zetten') ?></button>
+                    </form>
+                <?php endif; ?>
+
+                <form method="post" action="<?= $e($paginaUrl) ?>" class="wesley1-velden wesley1-tabpaneel" data-wesley1-paneel="eigen" role="tabpanel">
+                    <?= $csrfField() ?>
+                    <input type="hidden" name="actie" value="toevoegen_eigen">
+                    <?php if ($aantalNieuw === 0): ?>
+                        <p class="wesley1-hint"><?= $e($geenProducten
+                            ? 'Een eigen gerecht staat los van je assortiment.'
+                            : 'Al je actieve producten staan op de kaart. Voeg hier een eigen gerecht toe.') ?></p>
+                    <?php endif; ?>
+                    <label class="wesley1-veld">
+                        <span><?= $e('Naam') ?></span>
+                        <input class="form-control" type="text" name="naam" maxlength="160" required placeholder="<?= $e('Bv. Huisgemaakte tiramisu') ?>">
+                    </label>
+                    <label class="wesley1-veld">
+                        <span><?= $e('Omschrijving') ?></span>
+                        <input class="form-control" type="text" name="omschrijving" maxlength="300" placeholder="<?= $e('Bv. Dessert · per portie') ?>">
+                    </label>
+                    <label class="wesley1-veld">
+                        <span><?= $e('Prijs (€)') ?></span>
+                        <input class="form-control" type="number" name="prijs" min="0" max="99999" step="0.01" value="0.00" required>
+                    </label>
+                    <button type="submit" class="btn btn-primary wesley1-vol"><?= $e('Op de kaart zetten') ?></button>
+                </form>
+            </div>
+        </aside>
     </div>
-</article>
+
+    <!-- Voorbeeld van de kaart -->
+    <section class="wesley1-podium" aria-labelledby="wesley1-voorbeeld-titel">
+        <div class="wesley1-podium-kop no-print">
+            <h2 id="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
+            <p><?= $e('Zo ziet je klant de kaart. Met "Afdrukken" komt enkel deze kaart op A4.') ?></p>
+        </div>
+
+        <article class="wesley1-kaart" aria-label="<?= $e('Menukaart') ?>">
+            <div class="wesley1-kaart-binnen">
+                <header class="wesley1-kaart-kop">
+                    <p class="wesley1-kaart-ster" aria-hidden="true"><?= $e('✦ ✦ ✦') ?></p>
+                    <h3 class="wesley1-kaart-titel"><?= $e($menu['titel']) ?></h3>
+                    <?php if ($menu['ondertitel'] !== ''): ?>
+                        <p class="wesley1-kaart-ondertitel"><?= $e($menu['ondertitel']) ?></p>
+                    <?php endif; ?>
+                    <div class="wesley1-kaart-sier" aria-hidden="true"></div>
+                </header>
+
+                <?php if ($items === []): ?>
+                    <p class="wesley1-kaart-leeg"><?= $e('De kaart is nog leeg.') ?></p>
+                <?php else: ?>
+                    <ul class="wesley1-kaart-lijst">
+                        <?php foreach ($items as $item): ?>
+                            <li class="wesley1-kaart-item">
+                                <div class="wesley1-kaart-regel">
+                                    <span class="wesley1-kaart-naam"><?= $e($item['naam']) ?></span>
+                                    <span class="wesley1-kaart-stippen" aria-hidden="true"></span>
+                                    <span class="wesley1-kaart-prijs"><?= $e($prijs($item['prijs'])) ?></span>
+                                </div>
+                                <?php if ((string) $item['omschrijving'] !== ''): ?>
+                                    <p class="wesley1-kaart-omschrijving"><?= $e($item['omschrijving']) ?></p>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+
+                <footer class="wesley1-kaart-voet">
+                    <div class="wesley1-kaart-sier" aria-hidden="true"></div>
+                    <p><?= $e('Prettige feestdagen!') ?></p>
+                </footer>
+            </div>
+        </article>
+    </section>
+</div>
 
 <script src="<?= $e($asset('app.js')) ?>"></script>
