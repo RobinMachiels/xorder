@@ -78,15 +78,6 @@ if (!isset($wesley1Sjabloon)) {
                 [$user->id]
             );
         };
-        // Omschrijving voor op de kaart: products heeft geen omschrijving, dus categorie + eenheid (bv. "Hoofdgerecht · per pers.")
-        $omschrijvingVoor = static function (array $product): string {
-            $delen = array_filter([
-                trim((string) $product['category']),
-                trim((string) $product['unit']) !== '' ? 'per ' . trim((string) $product['unit']) : '',
-            ], static fn (string $deel): bool => $deel !== '');
-
-            return implode(' · ', $delen);
-        };
         // Volgende plaats onderaan de kaart
         $volgendeVolgorde = static function () use ($app, $user): int {
             $rij = $app->db->fetchOne(
@@ -96,8 +87,9 @@ if (!isset($wesley1Sjabloon)) {
 
             return (int) ($rij['hoogste'] ?? 0) + 1;
         };
-        // Een product uit het assortiment als nieuw item op de kaart zetten (enkel in wesley1_menu_items)
-        $zetOpKaart = static function (array $product) use ($app, $user, $omschrijvingVoor, $volgendeVolgorde): void {
+        // Een product uit het assortiment als nieuw item op de kaart zetten (enkel in wesley1_menu_items).
+        // Zonder omschrijving: onder de naam staat niets, tenzij de handelaar zelf een omschrijving invult.
+        $zetOpKaart = static function (array $product) use ($app, $user, $volgendeVolgorde): void {
             $app->db->execute(
                 'INSERT INTO wesley1_menu_items (user_id, product_id, naam, omschrijving, prijs, volgorde, created_at)
                  VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -105,7 +97,7 @@ if (!isset($wesley1Sjabloon)) {
                     $user->id,
                     (int) $product['id'],
                     (string) $product['name'],
-                    $omschrijvingVoor($product),
+                    '',
                     round((float) $product['price'], 2),
                     $volgendeVolgorde(),
                     date('Y-m-d H:i:s'),
@@ -674,7 +666,7 @@ $standaardTab = $aantalNieuw > 0 ? 'assortiment' : 'eigen';
                     </label>
                     <label class="wesley1-veld">
                         <span><?= $e('Omschrijving') ?></span>
-                        <input class="form-control" type="text" name="omschrijving" maxlength="300" placeholder="<?= $e('Bv. Dessert · per portie') ?>">
+                        <input class="form-control" type="text" name="omschrijving" maxlength="300" placeholder="<?= $e('Optioneel') ?>">
                     </label>
                     <label class="wesley1-veld">
                         <span><?= $e('Prijs (€)') ?></span>
