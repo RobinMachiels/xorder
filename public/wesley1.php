@@ -403,7 +403,7 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
 
     <?php if ($nietOpKaart !== []): ?>
         <form method="post" action="<?= $e($paginaUrl) ?>"
-              class="card wesley1-blok wesley1-overnemen<?= $items === [] ? ' wesley1-uitgelicht' : '' ?>">
+              class="card wesley1-blok wesley1-overnemen<?= $e($items === [] ? ' wesley1-uitgelicht' : '') ?>">
             <?= $csrfField() ?>
             <input type="hidden" name="actie" value="overnemen">
             <h2><?= $e($items === [] ? 'Begin met je assortiment' : 'Assortiment overnemen') ?></h2>
