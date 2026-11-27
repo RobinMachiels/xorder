@@ -17,58 +17,6 @@ if (is_file(__DIR__ . '/xorder-path.php')) {
 require_once $rootDir . '/src/autoload.php';
 
 /**
- * Create the wesley2_reviews table and indexes if they do not exist yet.
- */
-function wesley2_ensure_table(Database $db): void
-{
-    if ($db->driver() === 'mysql') {
-        $db->execute(
-            'CREATE TABLE IF NOT EXISTS `wesley2_reviews` (
-                `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-                `user_id` INT UNSIGNED NOT NULL,
-                `reviewer_name` VARCHAR(120) NOT NULL,
-                `title` VARCHAR(160) NOT NULL DEFAULT \'\',
-                `rating` TINYINT UNSIGNED NOT NULL,
-                `comment` TEXT NOT NULL,
-                `is_demo` TINYINT(1) NOT NULL DEFAULT 0,
-                `created_at` DATETIME NOT NULL,
-                `updated_at` DATETIME NOT NULL,
-                `deleted_at` DATETIME NULL DEFAULT NULL,
-                PRIMARY KEY (`id`),
-                KEY `idx_wesley2_reviews_user_rating` (`user_id`, `deleted_at`, `rating`),
-                KEY `idx_wesley2_reviews_user_created` (`user_id`, `deleted_at`, `created_at`),
-                CONSTRAINT `fk_wesley2_reviews_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
-        );
-        return;
-    }
-
-    $db->execute(
-        'CREATE TABLE IF NOT EXISTS wesley2_reviews (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            reviewer_name TEXT NOT NULL,
-            title TEXT NOT NULL DEFAULT \'\',
-            rating INTEGER NOT NULL,
-            comment TEXT NOT NULL,
-            is_demo INTEGER NOT NULL DEFAULT 0,
-            created_at TEXT NOT NULL,
-            updated_at TEXT NOT NULL,
-            deleted_at TEXT NULL DEFAULT NULL,
-            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-        )'
-    );
-    $db->execute(
-        'CREATE INDEX IF NOT EXISTS idx_wesley2_reviews_user_rating
-         ON wesley2_reviews (user_id, deleted_at, rating)'
-    );
-    $db->execute(
-        'CREATE INDEX IF NOT EXISTS idx_wesley2_reviews_user_created
-         ON wesley2_reviews (user_id, deleted_at, created_at)'
-    );
-}
-
-/**
  * Seed or restore 6 realistic Belgian customer reviews for a user.
  */
 function wesley2_seed_dummy_reviews(Database $db, int $userId, string $locale, bool $onlyIfNeverSeeded): int
@@ -517,8 +465,6 @@ try {
         Response::redirect($app->request->url('/login'))->send();
         exit;
     }
-
-    wesley2_ensure_table($app->db);
 
     $locale = $app->i18n->locale();
     $texts = wesley2_texts($locale);
