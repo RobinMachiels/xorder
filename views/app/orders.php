@@ -18,8 +18,8 @@ declare(strict_types=1);
             <h1><?= $e($t('orders.title')) ?></h1>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <a href="<?= $e($url('/app/export/xlsx')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
-            <a href="<?= $e($url('/app/orders/new')) ?>" class="btn btn-primary"><?= $e($t('orders.new')) ?></a>
+            <a href="<?= $e($url('/app/export')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
+            <a href="<?= $e($url('/app/order-new')) ?>" class="btn btn-primary"><?= $e($t('orders.new')) ?></a>
         </div>
     </div>
 
@@ -109,7 +109,7 @@ declare(strict_types=1);
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <form method="post" action="<?= $e($url('/app/orders/' . $order->id . '/status')) ?>" style="display:grid;gap:6px;min-width:155px;">
+                                <form method="post" action="<?= $e($url('/app/order-status', ['id' => $order->id])) ?>" style="display:grid;gap:6px;min-width:155px;">
                                     <?= $csrfField() ?>
                                     <select name="status" class="form-select" style="padding:5px 8px;font-size:0.82rem;" data-autosubmit>
                                         <?php foreach (\App\Models\Order::STATUSES as $st): ?>
@@ -125,9 +125,9 @@ declare(strict_types=1);
                             </td>
                             <td>
                                 <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                                    <a href="<?= $e($url('/app/orders/' . $order->id . '/edit')) ?>" class="btn btn-outline btn-sm"><?= $e($t('orders.edit')) ?></a>
-                                    <a href="<?= $e($url('/app/orders/' . $order->id . '/print')) ?>" target="_blank" class="btn btn-outline btn-sm"><?= $e($t('orders.print_btn')) ?></a>
-                                    <form method="post" action="<?= $e($url('/app/orders/' . $order->id . '/delete')) ?>" style="margin:0;">
+                                    <a href="<?= $e($url('/app/order-edit', ['id' => $order->id])) ?>" class="btn btn-outline btn-sm"><?= $e($t('orders.edit')) ?></a>
+                                    <a href="<?= $e($url('/app/order-print', ['id' => $order->id])) ?>" target="_blank" class="btn btn-outline btn-sm"><?= $e($t('orders.print_btn')) ?></a>
+                                    <form method="post" action="<?= $e($url('/app/order-delete', ['id' => $order->id])) ?>" style="margin:0;">
                                         <?= $csrfField() ?>
                                         <button type="submit" class="btn btn-danger btn-sm" data-confirm="<?= $e($t('orders.confirm_delete')) ?>"><?= $e($t('orders.delete_btn')) ?></button>
                                     </form>

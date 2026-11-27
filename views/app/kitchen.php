@@ -19,7 +19,7 @@ declare(strict_types=1);
         </div>
         <div class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;">
             <button type="button" data-print class="btn btn-outline"><?= $e($t('kitchen.print')) ?></button>
-            <a href="<?= $e($url('/app/export/xlsx')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
+            <a href="<?= $e($url('/app/export')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
         </div>
     </div>
 

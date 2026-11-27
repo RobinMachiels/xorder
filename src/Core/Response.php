@@ -9,6 +9,16 @@ namespace App\Core;
  */
 final class Response
 {
+    /** Beveiligingsheaders op elk antwoord (vroeger in public/.htaccess). */
+    private const SECURITY_HEADERS = [
+        'X-Content-Type-Options' => 'nosniff',
+        'X-Frame-Options' => 'DENY',
+        'Referrer-Policy' => 'strict-origin-when-cross-origin',
+        'Permissions-Policy' => 'camera=(), microphone=(), geolocation=()',
+        'Content-Security-Policy' => "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; "
+            . "script-src 'self'; connect-src 'self'; form-action 'self'; base-uri 'self'; frame-ancestors 'none'",
+    ];
+
     private int $status;
 
     /** @var array<string, string> */
@@ -68,7 +78,7 @@ final class Response
     {
         if (!headers_sent()) {
             http_response_code($this->status);
-            foreach ($this->headers as $name => $value) {
+            foreach (array_merge(self::SECURITY_HEADERS, $this->headers) as $name => $value) {
                 header($name . ': ' . $value);
             }
         }

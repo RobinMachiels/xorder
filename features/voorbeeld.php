@@ -12,10 +12,10 @@ declare(strict_types=1);
  * @var \App\Core\Request $request      $request->isPost(), $request->post('veld'), $request->query('veld')
  * @var \App\Models\User|null $user     de ingelogde handelaar, of null
  * @var string $featureName             jouw naam, bv. "voorbeeld"
- * @var string $featureUrl              de url van jouw pagina, bv. /features/voorbeeld
+ * @var string $featureUrl              de url van jouw pagina, bv. /features.php?name=voorbeeld
  * @var callable $asset                 $asset('style.css') geeft de url naar public/features/<naam>/style.css
  * @var callable $e                     escapen van tekst: altijd gebruiken bij output!
- * @var callable $url                   $url('/app/orders') geeft een correcte link binnen de app
+ * @var callable $url                   $url('/app/orders') geeft /app/orders.php, $url('/app/order-edit', ['id' => 5]) geeft /app/order-edit.php?id=5
  * @var callable $csrfField             verborgen veld voor elk POST-formulier
  *
  * Regels:

@@ -100,17 +100,18 @@ final class View
         $t = function (string $key, array $params = []): string {
             return $this->i18n->t($key, $params);
         };
-        $url = function (string $path = '/'): string {
-            return $this->request->url($path);
+        // $url('/app/order-edit', ['id' => 5]) geeft '<base>/app/order-edit.php?id=5'
+        $url = function (string $path = '/', array $query = []): string {
+            return $this->request->url($path, $query);
         };
-        $absUrl = function (string $path = '/'): string {
-            return $this->request->absoluteUrl($path);
+        $absUrl = function (string $path = '/', array $query = []): string {
+            return $this->request->absoluteUrl($path, $query);
         };
         $csrfField = function (): string {
             return $this->csrf->field();
         };
         // Url naar een bestand in public/ met ?v=<wijzigingstijd>, zodat browsers na elke deploy
-        // de nieuwe css/js ophalen ondanks de cache van een dag (zie public/.htaccess).
+        // de nieuwe css/js ophalen ondanks een eventuele cache van de webserver.
         $assetUrl = function (string $path): string {
             $publicDir = defined('XORDER_PUBLIC_DIR') ? (string) XORDER_PUBLIC_DIR : dirname($this->viewsDir) . '/public';
             $mtime = @filemtime($publicDir . '/' . ltrim($path, '/'));
@@ -123,6 +124,13 @@ final class View
         $supportedLocales = $this->i18n->supportedLocales();
         $flashes = $this->flashes();
         $currentPath = $this->request->path();
+        // Zelfde pagina (met dezelfde parameters) in een andere taal
+        $langUrl = function (string $locale): string {
+            return $this->request->url(
+                $this->request->path(),
+                array_merge($this->request->allQuery(), ['lang' => $locale])
+            );
+        };
 
         extract($data, EXTR_SKIP);
         extract($this->shared, EXTR_SKIP);

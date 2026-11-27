@@ -13,7 +13,7 @@ declare(strict_types=1);
  */
 
 $isEdit = $order !== null;
-$actionUrl = $isEdit ? $url('/app/orders/' . $order->id) : $url('/app/orders');
+$actionUrl = $isEdit ? $url('/app/order-edit', ['id' => $order->id]) : $url('/app/order-new');
 
 $existingItems = $isEdit && $order->items !== []
     ? $order->items

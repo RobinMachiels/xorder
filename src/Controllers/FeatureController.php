@@ -42,12 +42,12 @@ final class FeatureController extends BaseController
         }
 
         // CSRF wordt hier centraal gecontroleerd: de cursist zet enkel $csrfField() in zijn formulier.
-        if ($request->isPost() && ($csrfError = $this->verifyCsrf($request, '/features/' . $name)) !== null) {
+        if ($request->isPost() && ($csrfError = $this->verifyCsrf($request, '/features', ['name' => $name])) !== null) {
             return $csrfError;
         }
 
-        $url = function (string $path = '/') use ($request): string {
-            return $request->url($path);
+        $url = function (string $path = '/', array $query = []) use ($request): string {
+            return $request->url($path, $query);
         };
 
         $result = $this->app->view->renderFile($file, [
@@ -55,7 +55,7 @@ final class FeatureController extends BaseController
             'request' => $request,
             'user' => $this->auth->currentUser(),
             'featureName' => $name,
-            'featureUrl' => $request->url('/features/' . $name),
+            'featureUrl' => $request->url('/features', ['name' => $name]),
             'asset' => static function (string $file) use ($url, $name): string {
                 return $url('/features/' . $name . '/' . ltrim($file, '/'));
             },

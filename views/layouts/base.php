@@ -57,7 +57,7 @@ declare(strict_types=1);
             <?php endif; ?>
             <?php if ($user !== null): ?>
                 <a class="nav-link <?= $currentPath === '/app' ? 'is-active' : '' ?>" href="<?= $e($url('/app')) ?>"><?= $e($t('nav.dashboard')) ?></a>
-                <a class="nav-link <?= str_starts_with($currentPath, '/app/orders') ? 'is-active' : '' ?>" href="<?= $e($url('/app/orders')) ?>"><?= $e($t('nav.orders')) ?></a>
+                <a class="nav-link <?= str_starts_with($currentPath, '/app/order') ? 'is-active' : '' ?>" href="<?= $e($url('/app/orders')) ?>"><?= $e($t('nav.orders')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/kitchen' ? 'is-active' : '' ?>" href="<?= $e($url('/app/kitchen')) ?>"><?= $e($t('nav.kitchen')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/products' ? 'is-active' : '' ?>" href="<?= $e($url('/app/products')) ?>"><?= $e($t('nav.products')) ?></a>
                 <a class="nav-link <?= $currentPath === '/app/settings' ? 'is-active' : '' ?>" href="<?= $e($url('/app/settings')) ?>"><?= $e($t('nav.settings')) ?></a>
@@ -71,12 +71,12 @@ declare(strict_types=1);
         <div class="header-actions">
             <div class="lang-switch" aria-label="Language">
                 <?php foreach ($supportedLocales as $loc): ?>
-                    <a href="<?= $e($url($currentPath)) ?>?lang=<?= $e($loc) ?>" class="<?= $locale === $loc ? 'is-active' : '' ?>"><?= $e(strtoupper($loc)) ?></a>
+                    <a href="<?= $e($langUrl($loc)) ?>" class="<?= $locale === $loc ? 'is-active' : '' ?>"><?= $e(strtoupper($loc)) ?></a>
                 <?php endforeach; ?>
             </div>
 
             <?php if ($user !== null): ?>
-                <a href="<?= $e($url('/app/export/xlsx')) ?>" class="btn btn-gold btn-sm"><?= $e($t('nav.backup_now')) ?></a>
+                <a href="<?= $e($url('/app/export')) ?>" class="btn btn-gold btn-sm"><?= $e($t('nav.backup_now')) ?></a>
                 <form method="post" action="<?= $e($url('/logout')) ?>" style="margin:0;">
                     <?= $csrfField() ?>
                     <button type="submit" class="btn btn-outline btn-sm"><?= $e($t('nav.logout')) ?></button>

@@ -21,8 +21,8 @@ declare(strict_types=1);
             <p style="margin:0;color:var(--ink-600);"><?= $e($t('dash.title')) ?></p>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <a href="<?= $e($url('/app/orders/new')) ?>" class="btn btn-primary"><?= $e($t('dash.new_order')) ?></a>
-            <a href="<?= $e($url('/app/export/xlsx')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
+            <a href="<?= $e($url('/app/order-new')) ?>" class="btn btn-primary"><?= $e($t('dash.new_order')) ?></a>
+            <a href="<?= $e($url('/app/export')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
         </div>
     </div>
 
@@ -32,7 +32,7 @@ declare(strict_types=1);
                 <strong style="display:block;"><?= $e($t('dash.demo_banner_title')) ?></strong>
                 <span style="font-weight:500;"><?= $e($t('dash.demo_banner_desc')) ?></span>
             </div>
-            <form method="post" action="<?= $e($url('/app/demo/clear')) ?>" style="margin:0;">
+            <form method="post" action="<?= $e($url('/app/demo-clear')) ?>" style="margin:0;">
                 <?= $csrfField() ?>
                 <button type="submit" class="btn btn-outline btn-sm"><?= $e($t('dash.demo_clear_btn')) ?></button>
             </form>
@@ -69,7 +69,7 @@ declare(strict_types=1);
                     <?= $e($t('dash.backup_never')) ?>
                 <?php endif; ?>
             </p>
-            <a href="<?= $e($url('/app/export/xlsx')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
+            <a href="<?= $e($url('/app/export')) ?>" class="btn btn-gold"><?= $e($t('dash.backup_btn')) ?></a>
         </div>
 
         <div class="card">
@@ -79,7 +79,7 @@ declare(strict_types=1);
             <?php else: ?>
                 <div style="display:grid;gap:10px;">
                     <?php foreach ($stats['upcoming_dates'] as $day): ?>
-                        <a href="<?= $e($url('/app/orders')) ?>?pickup_date=<?= $e($day['pickup_date']) ?>" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--cream-50);text-decoration:none;">
+                        <a href="<?= $e($url('/app/orders', ['pickup_date' => $day['pickup_date']])) ?>" style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--cream-50);text-decoration:none;">
                             <span><strong><?= $e($day['pickup_date']) ?></strong> · <?= $e($t('dash.upcoming_orders', ['count' => $day['order_count']])) ?></span>
                             <strong>€ <?= $e(number_format($day['total_amount'], 2, ',', '.')) ?></strong>
                         </a>
@@ -119,7 +119,7 @@ declare(strict_types=1);
                         <?php foreach ($recentOrders as $order): ?>
                             <tr>
                                 <td>
-                                    <a href="<?= $e($url('/app/orders/' . $order->id . '/edit')) ?>"><strong><?= $e($order->orderNumber) ?></strong></a>
+                                    <a href="<?= $e($url('/app/order-edit', ['id' => $order->id])) ?>"><strong><?= $e($order->orderNumber) ?></strong></a>
                                     <?php if ($order->isDemo): ?>
                                         <div><span class="badge badge-gold" style="margin-top:4px;"><?= $e($t('orders.demo_tag')) ?></span></div>
                                     <?php endif; ?>

@@ -11,8 +11,10 @@ php -S 127.0.0.1:8787 -t public
 ```
 
 - Landingspagina + registratie (NL/FR): `http://127.0.0.1:8787/`
-- App dashboard (na registratie/login): `http://127.0.0.1:8787/app`
-- Features van de klas: `http://127.0.0.1:8787/features`
+- App dashboard (na registratie/login): `http://127.0.0.1:8787/app/`
+- Features van de klas: `http://127.0.0.1:8787/features.php`
+
+Elk adres is een gewoon `.php`-bestand in `public/` (bv. `login.php`, `app/orders.php`, `app/order-edit.php?id=5`). Er is geen `.htaccess` of rewrite nodig: elk bestand laadt `public/boot.php`, dat de app opstart en de route koppelt aan de juiste controller (zie `src/bootstrap.php`).
 
 Zonder `config/config.php` gebruikt de app `config/config.example.php` (SQLite in `storage/xorder.sqlite`, debug aan). Tabellen worden automatisch aangemaakt bij het eerste verzoek.
 
@@ -35,7 +37,7 @@ Wachtwoord voor alle drie: `xorder123`. Let op: het script wist eerst alle besta
 ## 2. Features van cursisten
 
 Elke cursist maakt `features/<voornaam>.php` met eigen assets in `public/features/<voornaam>/`.
-De pagina verschijnt vanzelf op `/features/<voornaam>` en in het menu. Lees [CONTRIBUTING.md](CONTRIBUTING.md).
+De pagina verschijnt vanzelf op `/features.php?name=<voornaam>` en in het menu. Lees [CONTRIBUTING.md](CONTRIBUTING.md).
 Op productie staan features uit (`features.enabled = false`) en worden ze niet mee gedeployed.
 
 ## 3. Productie
@@ -48,7 +50,7 @@ Zie [widget/README.md](widget/README.md). De bestanden staan in `public/widget/`
 
 ## 5. Extra's
 
-- **Wachtwoord vergeten:** `/forgot` en `/reset/<token>` (token 1 uur geldig, eenmalig, enkel gehasht opgeslagen). Links in mails komen uit `app.url`, nooit uit de Host-header.
+- **Wachtwoord vergeten:** `/forgot.php` en `/reset.php?token=<token>` (token 1 uur geldig, eenmalig, enkel gehasht opgeslagen). Links in mails komen uit `app.url`, nooit uit de Host-header.
 - **Brute-force bescherming:** max 8 loginpogingen per e-mail en IP per 15 minuten, max 5 resetaanvragen per IP per uur.
 - **Juridische pagina's:** `/privacy` en `/cookies` (NL/FR).
 - **Statistieken seizoensknop:** `php bin/widget-stats.php`.

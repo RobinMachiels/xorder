@@ -5,91 +5,67 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Simple pattern router supporting static and :param segments.
+ * Koppelt een route (het .php-bestand in public/, zonder extensie) en HTTP-methode aan een handler.
+ * Parameters komen uit de querystring, bv. /app/order-edit.php?id=5 geeft ['id' => '5'].
  */
 final class Router
 {
-    /** @var array<int, array{method: string, pattern: string, handler: callable}> */
+    /** @var array<string, array{handler: callable, params: array<int, string>}> */
     private array $routes = [];
 
-    public function get(string $pattern, callable $handler): void
+    /**
+     * @param array<int, string> $params Verplichte queryparameters die de handler in $params krijgt
+     */
+    public function get(string $route, callable $handler, array $params = []): void
     {
-        $this->add('GET', $pattern, $handler);
+        $this->add('GET', $route, $handler, $params);
     }
 
-    public function post(string $pattern, callable $handler): void
+    /**
+     * @param array<int, string> $params Verplichte queryparameters die de handler in $params krijgt
+     */
+    public function post(string $route, callable $handler, array $params = []): void
     {
-        $this->add('POST', $pattern, $handler);
+        $this->add('POST', $route, $handler, $params);
     }
 
-    private function add(string $method, string $pattern, callable $handler): void
+    /**
+     * @param array<int, string> $params
+     */
+    private function add(string $method, string $route, callable $handler, array $params): void
     {
-        $normalized = '/' . trim($pattern, '/');
-        if ($normalized !== '/') {
-            $normalized = rtrim($normalized, '/');
-        }
-
-        $this->routes[] = [
-            'method' => strtoupper($method),
-            'pattern' => $normalized,
+        $this->routes[$method . ' ' . self::normalize($route)] = [
             'handler' => $handler,
+            'params' => $params,
         ];
     }
 
     public function dispatch(Request $request): Response
     {
-        $method = $request->method();
-        $path = $request->path();
-
-        foreach ($this->routes as $route) {
-            if ($route['method'] !== $method) {
-                continue;
-            }
-
-            $params = $this->match($route['pattern'], $path);
-            if ($params === null) {
-                continue;
-            }
-
-            return ($route['handler'])($request, $params);
-        }
-
-        return Response::html('<h1>404 - Pagina niet gevonden</h1>', 404);
-    }
-
-    /**
-     * @return array<string, string>|null
-     */
-    private function match(string $pattern, string $path): ?array
-    {
-        if ($pattern === $path) {
-            return [];
-        }
-
-        $patternParts = explode('/', trim($pattern, '/'));
-        $pathParts = explode('/', trim($path, '/'));
-
-        if (count($patternParts) !== count($pathParts)) {
-            return null;
+        $route = $this->routes[$request->method() . ' ' . self::normalize($request->path())] ?? null;
+        if ($route === null) {
+            return self::notFound();
         }
 
         $params = [];
-        foreach ($patternParts as $index => $segment) {
-            $value = $pathParts[$index];
-            if (str_starts_with($segment, ':')) {
-                $paramName = substr($segment, 1);
-                if ($value === '') {
-                    return null;
-                }
-                $params[$paramName] = $value;
-                continue;
+        foreach ($route['params'] as $name) {
+            $value = $request->query($name);
+            if (!is_string($value) || $value === '') {
+                return self::notFound();
             }
-
-            if ($segment !== $value) {
-                return null;
-            }
+            $params[$name] = $value;
         }
 
-        return $params;
+        return ($route['handler'])($request, $params);
+    }
+
+    private static function normalize(string $route): string
+    {
+        return '/' . trim($route, '/');
+    }
+
+    private static function notFound(): Response
+    {
+        return Response::html('<h1>404 - Pagina niet gevonden</h1>', 404);
     }
 }
