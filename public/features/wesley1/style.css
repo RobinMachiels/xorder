@@ -373,3 +373,22 @@
         font-size: 11pt;
     }
 }
+
+/* ---------- Lege toestanden ---------- */
+.wesley1-leeg {
+    border-left: 4px solid var(--gold-500, #c88a2e);
+}
+
+/* Lege kaart, wel producten: "Assortiment overnemen" valt meteen op */
+.wesley1-uitgelicht {
+    border: 2px solid var(--gold-500, #c88a2e);
+    background: linear-gradient(135deg, var(--gold-100, #fbf3e4), #ffffff);
+}
+
+.wesley1-uitgelicht h2 {
+    font-size: 1.3rem;
+}
+
+.wesley1-leeg > .btn {
+    justify-self: start;
+}

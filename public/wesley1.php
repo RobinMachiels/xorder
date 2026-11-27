@@ -393,11 +393,23 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
 </div>
 
 <div class="wesley1-beheer no-print">
+    <?php if ($producten === [] && $items === []): ?>
+        <div class="card wesley1-blok wesley1-leeg">
+            <h2><?= $e('Voeg eerst producten toe') ?></h2>
+            <p><?= $e('Je hebt nog geen actieve producten in je assortiment. Voeg ze toe op de productpagina, dan kun je ze hier met één klik op de kaart zetten. Een eigen gerecht toevoegen kan wel al meteen.') ?></p>
+            <a class="btn btn-primary" href="<?= $e($url('/app/products')) ?>"><?= $e('Naar mijn producten') ?></a>
+        </div>
+    <?php endif; ?>
+
     <?php if ($nietOpKaart !== []): ?>
-        <form method="post" action="<?= $e($paginaUrl) ?>" class="card wesley1-blok wesley1-overnemen">
+        <form method="post" action="<?= $e($paginaUrl) ?>"
+              class="card wesley1-blok wesley1-overnemen<?= $items === [] ? ' wesley1-uitgelicht' : '' ?>">
             <?= $csrfField() ?>
             <input type="hidden" name="actie" value="overnemen">
-            <h2><?= $e('Assortiment overnemen') ?></h2>
+            <h2><?= $e($items === [] ? 'Begin met je assortiment' : 'Assortiment overnemen') ?></h2>
+            <?php if ($items === []): ?>
+                <p><?= $e('Je kaart is nog leeg. Zet al je actieve producten in één keer op de kaart; daarna pas je namen, omschrijvingen, prijzen en volgorde aan. Je echte assortiment blijft ongewijzigd.') ?></p>
+            <?php endif; ?>
             <p><?= $e(count($nietOpKaart) === 1
                 ? '1 actief product uit je assortiment staat nog niet op de kaart.'
                 : count($nietOpKaart) . ' actieve producten uit je assortiment staan nog niet op de kaart.') ?></p>
@@ -454,7 +466,7 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
     <div class="card wesley1-blok wesley1-items">
         <h2><?= $e('Op de kaart') ?></h2>
         <?php if ($items === []): ?>
-            <p><?= $e('Nog niets op de kaart.') ?></p>
+            <p><?= $e('Nog niets op de kaart. Neem je assortiment over of voeg een eigen gerecht toe.') ?></p>
         <?php else: ?>
             <ul class="wesley1-itemlijst">
                 <?php foreach ($items as $positie => $item): ?>
@@ -511,7 +523,9 @@ $prijs = static fn (mixed $bedrag): string => '€ ' . number_format((float) $be
 
 <div class="wesley1-voorbeeld-balk no-print">
     <h2 class="wesley1-voorbeeld-titel"><?= $e('Voorbeeld van de kaart') ?></h2>
-    <button type="button" class="btn btn-gold" id="wesley1-afdrukken"><?= $e('Afdrukken') ?></button>
+    <?php if ($items !== []): ?>
+        <button type="button" class="btn btn-gold" id="wesley1-afdrukken"><?= $e('Afdrukken') ?></button>
+    <?php endif; ?>
 </div>
 
 <article class="wesley1-kaart" aria-label="<?= $e('Menukaart') ?>">
